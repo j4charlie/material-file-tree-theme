@@ -1,4 +1,4 @@
-# material-icon-theme-for-obsidian
+# material-icon-theme-for-vault
 
 An Obsidian plugin that brings the Material Icon Theme file tree style to Obsidian.
 
@@ -20,7 +20,7 @@ project for Obsidian's file explorer.
 1. Create a folder in your vault:
 
    ```text
-   <your-vault>/.obsidian/plugins/material-icon-theme-for-obsidian/
+   <your-vault>/.obsidian/plugins/material-icon-theme-for-vault/
    ```
 
 2. Copy these files into that folder:
@@ -38,7 +38,7 @@ project for Obsidian's file explorer.
 
 3. In Obsidian, go to `Settings -> Community plugins`.
 4. Turn off restricted mode if needed.
-5. Enable `material-icon-theme-for-obsidian`.
+5. Enable `material-icon-theme-for-vault`.
 
 ## Attribution
 

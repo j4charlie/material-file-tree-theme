@@ -1,6 +1,6 @@
 const { Plugin, PluginSettingTab, Setting, normalizePath } = require("obsidian");
 
-const BODY_CLASS = "material-icon-theme-for-obsidian-enabled";
+const BODY_CLASS = "material-icon-theme-for-vault-enabled";
 
 const DEFAULT_SETTINGS = {
   enableFileIcons: true,
@@ -430,7 +430,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       this.rootFolderNameExpandedIcons = lowerRecord(iconTheme.rootFolderNamesExpanded);
       this.fileExtensionKeys = Object.keys(this.fileExtensionIcons).sort((a, b) => b.length - a.length);
     } catch (error) {
-      console.error("material-icon-theme-for-obsidian: failed to load bundled material-icons.json", error);
+      console.error("material-icon-theme-for-vault: failed to load bundled material-icons.json", error);
       this.iconTheme = { file: "file", folder: "folder", folderExpanded: "folder-open" };
       this.iconDefinitions = {};
       this.fileNameIcons = {};
@@ -480,7 +480,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "material-icon-theme-for-obsidian" });
+    containerEl.createEl("h2", { text: "material-icon-theme-for-vault" });
 
     new Setting(containerEl)
       .setName("File icons")

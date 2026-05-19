@@ -3,7 +3,7 @@
   "name": "material-icon-theme-for-vault",
   "version": "0.2.0",
   "minAppVersion": "1.5.0",
-  "description": "Adds Material-style file and folder icons to the Obsidian file explorer.",
+  "description": "Adds Material-style file and folder icons to the file explorer.",
   "author": "Local",
   "authorUrl": "",
   "isDesktopOnly": false

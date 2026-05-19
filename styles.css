@@ -1,0 +1,112 @@
+body.material-icon-theme-for-obsidian-enabled {
+  --mfti-icon-size: 16px;
+  --mfti-icon-opacity: 1;
+  --mfti-row-min-height: max(24px, calc(var(--mfti-icon-size) + 6px));
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated {
+  min-height: var(--mfti-row-min-height);
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.is-collapsed) > .nav-folder-children,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.is-collapsed) > .tree-item-children {
+  display: block;
+  height: auto;
+  min-height: 0;
+  position: static;
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.mfti-children-out-of-flow:not(.is-collapsed),
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item.mfti-children-out-of-flow:not(.is-collapsed) {
+  padding-bottom: calc(var(--mfti-out-of-flow-child-count, 0) * var(--mfti-row-min-height));
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-children-flow-repaired {
+  min-height: calc(var(--mfti-out-of-flow-child-count, 0) * var(--mfti-row-min-height));
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon {
+  align-items: center;
+  align-self: center;
+  display: inline-flex;
+  flex: 0 0 var(--mfti-icon-size);
+  height: var(--mfti-icon-size);
+  justify-content: center;
+  margin-inline-end: 6px;
+  opacity: var(--mfti-icon-opacity);
+  pointer-events: none;
+  width: var(--mfti-icon-size);
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow {
+  align-items: center;
+  align-self: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 14px;
+  height: 14px;
+  justify-content: center;
+  margin-inline-end: 2px;
+  opacity: 0.9;
+  pointer-events: auto;
+  width: 14px;
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow svg {
+  display: block;
+  height: 14px;
+  transform: rotate(0deg);
+  transition: transform 120ms ease;
+  width: 14px;
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow.is-open svg {
+  transform: rotate(90deg);
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
+  display: block;
+  height: var(--mfti-icon-size);
+  max-height: var(--mfti-icon-size);
+  max-width: var(--mfti-icon-size);
+  width: var(--mfti-icon-size);
+}
+
+body.material-icon-theme-for-obsidian-enabled.mfti-icon-grayscale .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
+  filter: grayscale(1);
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-extension {
+  color: inherit;
+}
+
+body.material-icon-theme-for-obsidian-enabled.mfti-hide-native-file-tags .workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {
+  display: none !important;
+}
+
+body.material-icon-theme-for-obsidian-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .collapse-icon,
+body.material-icon-theme-for-obsidian-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .nav-folder-collapse-indicator {
+  display: none !important;
+}
+
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::before,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::before,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::after,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::before,
+body.material-icon-theme-for-obsidian-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::after {
+  background: none !important;
+  content: none !important;
+  display: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}

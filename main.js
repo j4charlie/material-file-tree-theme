@@ -1,8 +1,19 @@
-const { Plugin, PluginSettingTab, Setting, normalizePath } = require("obsidian");
+const { Notice, Plugin, PluginSettingTab, Setting, normalizePath } = require("obsidian");
 
 const BODY_CLASS = "material-icon-theme-for-vault-enabled";
+const GITHUB_REPOSITORY_URL = "https://github.com/j4charlie/material-icon-theme-for-vault";
+const GITHUB_ISSUES_URL = "https://github.com/j4charlie/material-icon-theme-for-vault/issues";
+const RESOURCE_DOWNLOAD_URL = "https://github.com/j4charlie/material-icon-theme-for-vault/releases/latest";
+const RESOURCE_PACK_NAME = "material icon souce.zip";
+const RESOURCE_STATUS_READY = "ready";
+const RESOURCE_STATUS_MISSING = "missing";
+const LANGUAGE_OPTIONS = {
+  en: "English",
+  zh: "中文"
+};
 
 const DEFAULT_SETTINGS = {
+  language: "en",
   enableFileIcons: true,
   enableFolderIcons: true,
   enableFolderArrows: true,
@@ -79,11 +90,95 @@ const EXTENSION_LANGUAGE_IDS = {
   yml: "yaml"
 };
 
+const I18N = {
+  en: {
+    settingsTitle: "material-icon-theme-for-vault",
+    languageName: "Language",
+    languageDesc: "Change the language used on this settings page.",
+    githubIssueText: "If you run into any issues, such as compatibility problems with a specific theme, please open a GitHub issue. I will handle it as soon as possible.",
+    githubStarText: "If you enjoy this plugin, please consider giving it a star.",
+    githubName: "GitHub",
+    githubDesc: "Report issues or support the project.",
+    githubIssueButton: "Open issue",
+    githubStarButton: "Star on GitHub",
+    resourcesInstalled: "Icon resources installed",
+    resourcesMissing: "Icon resources missing",
+    resourcesReadyDesc: "The bundled icon mapping and SVG files are available.",
+    resourcesMissingDesc: "Missing: {{missing}}. Download {{pack}}, extract it, then import the extracted folder.",
+    resourcePackName: "Resource pack",
+    resourcePackDesc: "Open the GitHub release page. Download {{pack}}, then extract it.",
+    resourcePackButton: "Open download page",
+    importResourcesName: "Import resources",
+    importResourcesDesc: "Choose the extracted folder. It must contain dist/material-icons.json and icons/*.svg.",
+    importResourcesButton: "Import folder",
+    importSuccess: "Imported {{count}} icon resources.",
+    importFailed: "Failed to import icon resources.",
+    importInvalidFolder: "Choose the extracted resource pack folder that contains dist/material-icons.json and icons/*.svg.",
+    fileIconsName: "File icons",
+    fileIconsDesc: "Show plugin-managed icons for files.",
+    folderIconsName: "Folder icons",
+    folderIconsDesc: "Show plugin-managed icons for folders.",
+    folderArrowsName: "Folder arrows",
+    folderArrowsDesc: "Show plugin-managed folder expand/collapse arrows.",
+    fileExtensionsName: "File extensions",
+    fileExtensionsDesc: "Show file extensions in the file explorer.",
+    hideNativeTagsName: "Hide native file tags",
+    hideNativeTagsDesc: "Hide Obsidian file type badges such as JSON.",
+    iconSizeName: "Icon size",
+    iconSizeDesc: "Size in pixels.",
+    opacityName: "Opacity",
+    opacityDesc: "Icon opacity.",
+    grayscaleName: "Grayscale",
+    grayscaleDesc: "Render icons in grayscale."
+  },
+  zh: {
+    settingsTitle: "material-icon-theme-for-vault",
+    languageName: "语言",
+    languageDesc: "切换此配置页面使用的语言。",
+    githubIssueText: "如果你遇到任何问题，例如在某个主题下的兼容问题，欢迎在 GitHub 提 issue 给我，我会尽快处理。",
+    githubStarText: "如果你觉得这个插件不错，请给它一个 star。",
+    githubName: "GitHub",
+    githubDesc: "反馈问题或支持这个项目。",
+    githubIssueButton: "提交 issue",
+    githubStarButton: "去 GitHub 点 star",
+    resourcesInstalled: "图标资源已安装",
+    resourcesMissing: "图标资源缺失",
+    resourcesReadyDesc: "图标映射和 SVG 文件已可用。",
+    resourcesMissingDesc: "缺失：{{missing}}。请下载 {{pack}}，解压后导入解压目录。",
+    resourcePackName: "资源包",
+    resourcePackDesc: "打开 GitHub Release 页面，下载 {{pack}} 后解压。",
+    resourcePackButton: "打开下载页面",
+    importResourcesName: "导入资源",
+    importResourcesDesc: "选择解压后的目录。目录中必须包含 dist/material-icons.json 和 icons/*.svg。",
+    importResourcesButton: "导入文件夹",
+    importSuccess: "已导入 {{count}} 个图标资源。",
+    importFailed: "图标资源导入失败。",
+    importInvalidFolder: "请选择包含 dist/material-icons.json 和 icons/*.svg 的资源包解压目录。",
+    fileIconsName: "文件图标",
+    fileIconsDesc: "为文件显示插件管理的图标。",
+    folderIconsName: "文件夹图标",
+    folderIconsDesc: "为文件夹显示插件管理的图标。",
+    folderArrowsName: "文件夹箭头",
+    folderArrowsDesc: "显示插件管理的文件夹展开/折叠箭头。",
+    fileExtensionsName: "文件扩展名",
+    fileExtensionsDesc: "在文件浏览器中显示文件扩展名。",
+    hideNativeTagsName: "隐藏原生文件标签",
+    hideNativeTagsDesc: "隐藏 Obsidian 的文件类型标记，例如 JSON。",
+    iconSizeName: "图标大小",
+    iconSizeDesc: "单位为像素。",
+    opacityName: "透明度",
+    opacityDesc: "图标透明度。",
+    grayscaleName: "灰度",
+    grayscaleDesc: "以灰度样式显示图标。"
+  }
+};
+
 module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   async onload() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     this.pluginDir = this.manifest.dir || `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
     this.scanTimer = null;
+    this.resourceStatus = await this.getResourceStatus();
 
     await this.loadIconTheme();
     this.restoreFileExplorer();
@@ -139,6 +234,10 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   }
 
   decorateFileExplorer() {
+    if (this.resourceStatus?.state !== RESOURCE_STATUS_READY) {
+      return;
+    }
+
     const explorers = document.querySelectorAll('.workspace-leaf-content[data-type="file-explorer"]');
     explorers.forEach((explorer) => {
       if (this.settings.enableFolderIcons) {
@@ -274,7 +373,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       return;
     }
 
-    if (contentEl.textContent.trim().toLowerCase().endsWith(ext.toLowerCase())) {
+    if (fileTitleText(contentEl).toLowerCase().endsWith(ext.toLowerCase())) {
       return;
     }
 
@@ -415,6 +514,77 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     return this.app.vault.adapter.getResourcePath(normalizePath(`${this.pluginDir}/icons/${iconFileName}`));
   }
 
+  async getResourceStatus() {
+    const mappingPath = normalizePath(`${this.pluginDir}/dist/material-icons.json`);
+    const fileIconPath = normalizePath(`${this.pluginDir}/icons/file.svg`);
+    const folderIconPath = normalizePath(`${this.pluginDir}/icons/folder.svg`);
+    const folderOpenIconPath = normalizePath(`${this.pluginDir}/icons/folder-open.svg`);
+
+    const [hasMapping, hasFileIcon, hasFolderIcon, hasFolderOpenIcon] = await Promise.all([
+      this.app.vault.adapter.exists(mappingPath),
+      this.app.vault.adapter.exists(fileIconPath),
+      this.app.vault.adapter.exists(folderIconPath),
+      this.app.vault.adapter.exists(folderOpenIconPath)
+    ]);
+
+    const missing = [];
+    if (!hasMapping) {
+      missing.push("dist/material-icons.json");
+    }
+    if (!hasFileIcon) {
+      missing.push("icons/file.svg");
+    }
+    if (!hasFolderIcon) {
+      missing.push("icons/folder.svg");
+    }
+    if (!hasFolderOpenIcon) {
+      missing.push("icons/folder-open.svg");
+    }
+
+    return {
+      state: missing.length ? RESOURCE_STATUS_MISSING : RESOURCE_STATUS_READY,
+      missing
+    };
+  }
+
+  async reloadResources() {
+    this.resourceStatus = await this.getResourceStatus();
+    await this.loadIconTheme();
+    this.restoreFileExplorer({ keepBodyState: true });
+    this.scheduleScan();
+  }
+
+  async importResourceFolder(files) {
+    const fileList = Array.from(files || []);
+    const mappingFile = findResourceFile(fileList, "dist/material-icons.json");
+    const iconFiles = findResourceFilesInFolder(fileList, "icons", ".svg");
+
+    if (!mappingFile || !iconFiles.length) {
+      throw new Error(t(this, "importInvalidFolder"));
+    }
+
+    await ensureAdapterFolder(this.app.vault.adapter, normalizePath(`${this.pluginDir}/dist`));
+    await ensureAdapterFolder(this.app.vault.adapter, normalizePath(`${this.pluginDir}/icons`));
+    await this.app.vault.adapter.write(
+      normalizePath(`${this.pluginDir}/dist/material-icons.json`),
+      await mappingFile.text()
+    );
+
+    for (const file of iconFiles) {
+      const relativeIconPath = getRelativePathAfterFolder(file, "icons");
+      if (!relativeIconPath || isUnsafeRelativePath(relativeIconPath)) {
+        continue;
+      }
+
+      const destination = normalizePath(`${this.pluginDir}/icons/${relativeIconPath}`);
+      await ensureAdapterFolder(this.app.vault.adapter, dirname(destination));
+      await this.app.vault.adapter.write(destination, await file.text());
+    }
+
+    await this.reloadResources();
+    return iconFiles.length;
+  }
+
   async loadIconTheme() {
     try {
       const raw = await this.app.vault.adapter.read(normalizePath(`${this.pluginDir}/dist/material-icons.json`));
@@ -480,11 +650,14 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "material-icon-theme-for-vault" });
+    containerEl.createEl("h2", { text: t(this.plugin, "settingsTitle") });
+    this.renderLanguageControl(containerEl);
+    this.renderGithubControls(containerEl);
+    this.renderResourceControls(containerEl);
 
     new Setting(containerEl)
-      .setName("File icons")
-      .setDesc("Show plugin-managed icons for files.")
+      .setName(t(this.plugin, "fileIconsName"))
+      .setDesc(t(this.plugin, "fileIconsDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.enableFileIcons)
         .onChange(async (value) => {
@@ -493,8 +666,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Folder icons")
-      .setDesc("Show plugin-managed icons for folders.")
+      .setName(t(this.plugin, "folderIconsName"))
+      .setDesc(t(this.plugin, "folderIconsDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.enableFolderIcons)
         .onChange(async (value) => {
@@ -503,8 +676,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Folder arrows")
-      .setDesc("Show plugin-managed folder expand/collapse arrows.")
+      .setName(t(this.plugin, "folderArrowsName"))
+      .setDesc(t(this.plugin, "folderArrowsDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.enableFolderArrows)
         .onChange(async (value) => {
@@ -513,8 +686,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("File extensions")
-      .setDesc("Show file extensions in the file explorer.")
+      .setName(t(this.plugin, "fileExtensionsName"))
+      .setDesc(t(this.plugin, "fileExtensionsDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.showFileExtensions)
         .onChange(async (value) => {
@@ -523,8 +696,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Hide native file tags")
-      .setDesc("Hide Obsidian file type badges such as JSON.")
+      .setName(t(this.plugin, "hideNativeTagsName"))
+      .setDesc(t(this.plugin, "hideNativeTagsDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.hideNativeFileTags)
         .onChange(async (value) => {
@@ -533,8 +706,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Icon size")
-      .setDesc("Size in pixels.")
+      .setName(t(this.plugin, "iconSizeName"))
+      .setDesc(t(this.plugin, "iconSizeDesc"))
       .addSlider((slider) => slider
         .setLimits(12, 24, 1)
         .setValue(this.plugin.settings.iconSize)
@@ -545,8 +718,8 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Opacity")
-      .setDesc("Icon opacity.")
+      .setName(t(this.plugin, "opacityName"))
+      .setDesc(t(this.plugin, "opacityDesc"))
       .addSlider((slider) => slider
         .setLimits(0.35, 1, 0.05)
         .setValue(this.plugin.settings.opacity)
@@ -557,14 +730,109 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Grayscale")
-      .setDesc("Render icons in grayscale.")
+      .setName(t(this.plugin, "grayscaleName"))
+      .setDesc(t(this.plugin, "grayscaleDesc"))
       .addToggle((toggle) => toggle
         .setValue(this.plugin.settings.grayscale)
         .onChange(async (value) => {
           this.plugin.settings.grayscale = value;
           await this.plugin.saveSettings();
         }));
+  }
+
+  renderLanguageControl(containerEl) {
+    new Setting(containerEl)
+      .setName(t(this.plugin, "languageName"))
+      .setDesc(t(this.plugin, "languageDesc"))
+      .addDropdown((dropdown) => {
+        Object.entries(LANGUAGE_OPTIONS).forEach(([value, label]) => {
+          dropdown.addOption(value, label);
+        });
+        dropdown
+          .setValue(getLanguage(this.plugin))
+          .onChange(async (value) => {
+            this.plugin.settings.language = LANGUAGE_OPTIONS[value] ? value : "en";
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
+  }
+
+  renderGithubControls(containerEl) {
+    const supportEl = containerEl.createDiv({ cls: "mfti-github-support" });
+    supportEl.createEl("div", {
+      text: t(this.plugin, "githubIssueText")
+    });
+    supportEl.createEl("div", {
+      text: t(this.plugin, "githubStarText")
+    });
+
+    new Setting(containerEl)
+      .setName(t(this.plugin, "githubName"))
+      .setDesc(t(this.plugin, "githubDesc"))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "githubIssueButton"))
+        .onClick(() => {
+          window.open(GITHUB_ISSUES_URL);
+        }))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "githubStarButton"))
+        .onClick(() => {
+          window.open(GITHUB_REPOSITORY_URL);
+        }));
+  }
+
+  renderResourceControls(containerEl) {
+    const status = this.plugin.resourceStatus || { state: RESOURCE_STATUS_MISSING, missing: ["resources"] };
+    const isReady = status.state === RESOURCE_STATUS_READY;
+    const statusEl = containerEl.createDiv({
+      cls: `mfti-resource-status ${isReady ? "is-ready" : "is-missing"}`
+    });
+
+    statusEl.createEl("strong", {
+      text: isReady ? t(this.plugin, "resourcesInstalled") : t(this.plugin, "resourcesMissing")
+    });
+    statusEl.createEl("div", {
+      text: isReady
+        ? t(this.plugin, "resourcesReadyDesc")
+        : t(this.plugin, "resourcesMissingDesc", { missing: status.missing.join(", "), pack: RESOURCE_PACK_NAME })
+    });
+
+    new Setting(containerEl)
+      .setName(t(this.plugin, "resourcePackName"))
+      .setDesc(t(this.plugin, "resourcePackDesc", { pack: RESOURCE_PACK_NAME }))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "resourcePackButton"))
+        .onClick(() => {
+          window.open(RESOURCE_DOWNLOAD_URL);
+        }));
+
+    const inputEl = document.createElement("input");
+    inputEl.type = "file";
+    inputEl.multiple = true;
+    inputEl.webkitdirectory = true;
+    inputEl.style.display = "none";
+    inputEl.setAttribute("webkitdirectory", "");
+    inputEl.addEventListener("change", async () => {
+      try {
+        const importedCount = await this.plugin.importResourceFolder(inputEl.files);
+        new Notice(t(this.plugin, "importSuccess", { count: String(importedCount) }));
+        this.display();
+      } catch (error) {
+        console.error("material-icon-theme-for-vault: failed to import resources", error);
+        new Notice(error.message || t(this.plugin, "importFailed"));
+      } finally {
+        inputEl.value = "";
+      }
+    });
+    containerEl.appendChild(inputEl);
+
+    new Setting(containerEl)
+      .setName(t(this.plugin, "importResourcesName"))
+      .setDesc(t(this.plugin, "importResourcesDesc"))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "importResourcesButton"))
+        .onClick(() => inputEl.click()));
   }
 }
 
@@ -594,7 +862,9 @@ function createFolderArrowElement() {
 function getPath(titleEl, contentEl) {
   return (titleEl.getAttribute("data-path")
     || titleEl.closest("[data-path]")?.getAttribute("data-path")
+    || titleEl.getAttribute("title")
     || contentEl.getAttribute("title")
+    || titleEl.getAttribute("aria-label")
     || "").trim();
 }
 
@@ -623,6 +893,26 @@ function fileExtensionSuffix(path) {
   return index > 0 && index < name.length - 1 ? name.slice(index) : "";
 }
 
+function fileTitleText(contentEl) {
+  const ignoredSelectors = ".mfti-extension, .nav-file-tag";
+  let text = "";
+
+  const walker = document.createTreeWalker(contentEl, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      return parent?.closest(ignoredSelectors) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  let node = walker.nextNode();
+  while (node) {
+    text += node.nodeValue || "";
+    node = walker.nextNode();
+  }
+
+  return text.trim();
+}
+
 function normalizeLookupPath(path) {
   return String(path || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, "").toLowerCase();
 }
@@ -633,4 +923,71 @@ function lowerRecord(record) {
     result[String(key).toLowerCase()] = value;
   });
   return result;
+}
+
+function getLanguage(plugin) {
+  return LANGUAGE_OPTIONS[plugin.settings?.language] ? plugin.settings.language : "en";
+}
+
+function t(plugin, key, replacements = {}) {
+  const language = getLanguage(plugin);
+  const dictionary = I18N[language] || I18N.en;
+  let value = dictionary[key] || I18N.en[key] || key;
+
+  Object.entries(replacements).forEach(([name, replacement]) => {
+    value = value.replaceAll(`{{${name}}}`, replacement);
+  });
+
+  return value;
+}
+
+function findResourceFile(files, expectedPath) {
+  const normalizedExpected = normalizeLookupPath(expectedPath);
+  return files.find((file) => normalizeFileRelativePath(file) === normalizedExpected
+    || normalizeFileRelativePath(file).endsWith(`/${normalizedExpected}`));
+}
+
+function findResourceFilesInFolder(files, folderName, extensionName) {
+  const folderSegment = `/${normalizeLookupPath(folderName)}/`;
+  const normalizedExtension = extensionName.toLowerCase();
+  return files.filter((file) => {
+    const path = normalizeFileRelativePath(file);
+    return (path.startsWith(`${normalizeLookupPath(folderName)}/`) || path.includes(folderSegment))
+      && path.endsWith(normalizedExtension);
+  });
+}
+
+function getRelativePathAfterFolder(file, folderName) {
+  const rawPath = String(file.webkitRelativePath || file.name || "").replace(/\\/g, "/");
+  const parts = rawPath.split("/").filter(Boolean);
+  const folderIndex = parts.findIndex((part) => part.toLowerCase() === folderName.toLowerCase());
+  return folderIndex >= 0 ? parts.slice(folderIndex + 1).join("/") : file.name;
+}
+
+function normalizeFileRelativePath(file) {
+  return normalizeLookupPath(file.webkitRelativePath || file.name || "");
+}
+
+function isUnsafeRelativePath(path) {
+  return path.startsWith("/")
+    || path.split("/").some((part) => part === ".." || part === "");
+}
+
+function dirname(path) {
+  const index = path.lastIndexOf("/");
+  return index > 0 ? path.slice(0, index) : "";
+}
+
+async function ensureAdapterFolder(adapter, path) {
+  const normalizedPath = normalizePath(path);
+  if (!normalizedPath || await adapter.exists(normalizedPath)) {
+    return;
+  }
+
+  const parent = dirname(normalizedPath);
+  if (parent && !(await adapter.exists(parent))) {
+    await ensureAdapterFolder(adapter, parent);
+  }
+
+  await adapter.mkdir(normalizedPath);
 }

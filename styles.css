@@ -110,3 +110,34 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   -webkit-mask-image: none !important;
   mask-image: none !important;
 }
+
+.mfti-github-support {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+}
+
+.mfti-github-support > div + div {
+  margin-top: 6px;
+}
+
+.mfti-resource-status {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+}
+
+.mfti-resource-status strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.mfti-resource-status.is-ready {
+  border-color: var(--color-green);
+}
+
+.mfti-resource-status.is-missing {
+  border-color: var(--color-orange);
+}

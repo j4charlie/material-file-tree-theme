@@ -97,6 +97,8 @@ const I18N = {
     languageDesc: "Change the language used on this settings page.",
     githubIssueText: "If you run into any issues, such as compatibility problems with a specific theme, please open a GitHub issue. I will handle it as soon as possible.",
     githubStarText: "If you enjoy this plugin, please consider giving it a star.",
+    githubUsageTitle: "Usage tip",
+    githubUsageText: "If your vault contains many file types, remember to enable Settings -> Files and links -> Detect all file extensions. If you work with code files, you can also install the Code Files plugin from the community plugin marketplace.",
     githubName: "GitHub",
     githubDesc: "Report issues or support the project.",
     githubIssueButton: "Open issue",
@@ -137,6 +139,8 @@ const I18N = {
     languageDesc: "切换此配置页面使用的语言。",
     githubIssueText: "如果你遇到任何问题，例如在某个主题下的兼容问题，欢迎在 GitHub 提 issue 给我，我会尽快处理。",
     githubStarText: "如果你觉得这个插件不错，请给它一个 star。",
+    githubUsageTitle: "使用建议",
+    githubUsageText: "如果 vault 有多种类型的文件，记得开启 设置 -> 文件与链接 -> 检测所有类型文件。 如果涉及代码，可以在插件市场下载 Code Files 插件。",
     githubName: "GitHub",
     githubDesc: "反馈问题或支持这个项目。",
     githubIssueButton: "提交 issue",
@@ -766,6 +770,9 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
     supportEl.createEl("div", {
       text: t(this.plugin, "githubStarText")
     });
+    const usageEl = supportEl.createEl("div", { cls: "mfti-github-usage" });
+    usageEl.createEl("strong", { text: t(this.plugin, "githubUsageTitle") });
+    usageEl.createSpan({ text: t(this.plugin, "githubUsageText") });
 
     new Setting(containerEl)
       .setName(t(this.plugin, "githubName"))

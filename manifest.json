@@ -1,7 +1,7 @@
 {
   "id": "material-icon-theme-for-vault",
   "name": "material-icon-theme-for-vault",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "minAppVersion": "1.5.0",
   "description": "Adds Material-style file and folder icons to the file explorer.",
   "author": "Local",

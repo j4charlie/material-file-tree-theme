@@ -48,7 +48,7 @@ page reports missing icon resources:
 
 1. Open the plugin settings.
 2. Click `Open download page`.
-3. Download `material icon souce.zip` from the latest GitHub release.
+3. Download `material-icon-souce.zip` from the latest GitHub release.
 4. Extract the zip.
 5. Click `Import folder` and choose the extracted folder that contains `icons/`
    and `dist/material-icons.json`.
@@ -58,7 +58,7 @@ file explorer icons automatically.
 
 ## Release assets
 
-Each GitHub release should include `material icon souce.zip` so users can import
+Each GitHub release should include `material-icon-souce.zip` so users can import
 the icon resources from the plugin settings page.
 
 After creating a release for a tag, upload the resource pack:
@@ -67,7 +67,7 @@ After creating a release for a tag, upload the resource pack:
 scripts/release-resource-pack.sh <release-tag>
 ```
 
-The script rebuilds `material icon souce.zip` from `dist/` and `icons/`, then
+The script rebuilds `material-icon-souce.zip` from `dist/` and `icons/`, then
 uploads it to the release with `gh release upload --clobber`.
 
 ## Attribution

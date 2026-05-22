@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-asset_name="material icon souce.zip"
+asset_name="material-icon-souce.zip"
 tag="${1:-}"
 
 if [[ -z "$tag" ]]; then

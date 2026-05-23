@@ -7,6 +7,123 @@ const RESOURCE_DOWNLOAD_URL = "https://github.com/j4charlie/material-icon-theme-
 const RESOURCE_PACK_NAME = "material-icon-souce.zip";
 const RESOURCE_STATUS_READY = "ready";
 const RESOURCE_STATUS_MISSING = "missing";
+const STARTUP_SCAN_DELAYS = [0, 160, 420];
+const DEBUG_FILE_TREE_LAYOUT = false;
+const DEBUG_FILE_TREE_CONSOLE = false;
+const DEBUG_FILE_TREE_FOLDER_LIMIT = 120;
+const DEBUG_FILE_TREE_LOG_LIMIT = 80;
+const DEBUG_FILE_TREE_MUTATION_LIMIT = 8;
+const DEBUG_FILE_TREE_WARNING_LIMIT = 30;
+const NEUTRAL_FILE_TREE_SNIPPET_NAME = "neutral-file-tree";
+const NEUTRAL_FILE_TREE_SNIPPET_FILE = `${NEUTRAL_FILE_TREE_SNIPPET_NAME}.css`;
+const NEUTRAL_FILE_TREE_SNIPPET_CSS = `/* Neutralize theme file explorer coloring while keeping plugin icons. */
+.workspace-leaf-content[data-type="file-explorer"] {
+  --nav-indentation-guide-color: var(--background-modifier-border);
+  --nav-indentation-guide-width: 1px;
+  --text-folder-file-icon: var(--text-muted);
+  --folder-color: var(--text-muted);
+  --mfti-row-hover-background: rgba(128, 128, 128, 0.12);
+  --mfti-row-active-background: rgba(128, 128, 128, 0.18);
+  --tab-color: var(--text-muted);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  filter: none !important;
+  margin: 0 !important;
+  --tab-color: var(--text-muted) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-title,
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-folder-title,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title {
+  background-color: transparent !important;
+  border-radius: 3px !important;
+  color: var(--nav-item-color) !important;
+  filter: none !important;
+  text-decoration: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder:hover,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-folder-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title:hover {
+  color: var(--nav-item-color-hover) !important;
+  background-color: var(--mfti-row-hover-background) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title.is-active,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title.is-active {
+  color: var(--nav-item-color-active) !important;
+  background-color: var(--mfti-row-active-background) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
+  background: transparent !important;
+  border-left: none !important;
+  border-inline-start: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
+  background: transparent !important;
+  border-left: none !important;
+  border-inline-start: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-indentation-guide {
+  display: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::after {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  content: none !important;
+  display: none !important;
+  filter: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .collapse-icon,
+body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .nav-folder-collapse-indicator,
+body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .nav-indentation-guide {
+  display: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder > .nav-folder-title::before,
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder > .tree-item-self.nav-folder-title::before {
+  content: none !important;
+  display: none !important;
+}
+`;
 const LANGUAGE_OPTIONS = {
   en: "English",
   zh: "中文"
@@ -131,7 +248,15 @@ const I18N = {
     opacityName: "Opacity",
     opacityDesc: "Icon opacity.",
     grayscaleName: "Grayscale",
-    grayscaleDesc: "Render icons in grayscale."
+    grayscaleDesc: "Render icons in grayscale.",
+    themeCompatibilityName: "Theme compatibility",
+    themeCompatibilityDesc: "Create or remove a CSS snippet that neutralizes theme colors in the file tree while keeping plugin icons.",
+    installNeutralFileTreeButton: "Install CSS snippet",
+    resetNeutralFileTreeButton: "Reset",
+    neutralFileTreeInstalled: "Created neutral-file-tree. Go to Settings -> Appearance -> CSS snippets -> neutral-file-tree and enable it.",
+    neutralFileTreeInstallFailed: "Failed to create neutral-file-tree CSS snippet.",
+    neutralFileTreeRemoved: "Removed neutral-file-tree CSS snippet.",
+    neutralFileTreeRemoveFailed: "Failed to remove neutral-file-tree CSS snippet."
   },
   zh: {
     settingsTitle: "material-icon-theme-for-vault",
@@ -173,7 +298,15 @@ const I18N = {
     opacityName: "透明度",
     opacityDesc: "图标透明度。",
     grayscaleName: "灰度",
-    grayscaleDesc: "以灰度样式显示图标。"
+    grayscaleDesc: "以灰度样式显示图标。",
+    themeCompatibilityName: "主题兼容",
+    themeCompatibilityDesc: "创建或移除一个 CSS 代码片段，用于屏蔽主题对文件树颜色的影响，同时保留插件图标。",
+    installNeutralFileTreeButton: "注入 CSS 片段",
+    resetNeutralFileTreeButton: "重置",
+    neutralFileTreeInstalled: "已创建 neutral-file-tree。请前往 设置 -> 外观 -> CSS 代码片段 -> neutral-file-tree 开启。",
+    neutralFileTreeInstallFailed: "创建 neutral-file-tree CSS 片段失败。",
+    neutralFileTreeRemoved: "已移除 neutral-file-tree CSS 片段。",
+    neutralFileTreeRemoveFailed: "移除 neutral-file-tree CSS 片段失败。"
   }
 };
 
@@ -182,27 +315,41 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     this.pluginDir = this.manifest.dir || `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
     this.scanTimer = null;
+    this.startupScanTimers = new Set();
+    this.suppressFileExplorerMutations = false;
+    this.debugScanIndex = 0;
+    this.debugMutationLogCount = 0;
+    this.debugWarningLogCount = 0;
     this.resourceStatus = await this.getResourceStatus();
 
     await this.loadIconTheme();
     this.restoreFileExplorer();
     this.applyBodyState();
     this.addSettingTab(new MaterialFileTreeIconsSettingTab(this.app, this));
+    this.installDebugHelpers();
+    this.debugAllFileExplorers("onload-after-body-state");
 
-    this.registerEvent(this.app.workspace.on("layout-change", () => this.scheduleScan()));
-    this.registerEvent(this.app.workspace.on("file-open", () => this.scheduleScan()));
-    this.registerEvent(this.app.vault.on("create", () => this.scheduleScan()));
-    this.registerEvent(this.app.vault.on("rename", () => this.scheduleScan()));
-    this.registerEvent(this.app.vault.on("delete", () => this.scheduleScan()));
+    this.registerEvent(this.app.workspace.on("layout-change", () => this.handleWorkspaceTreeChange()));
+    this.registerEvent(this.app.workspace.on("file-open", () => this.handleWorkspaceTreeChange()));
+    this.registerEvent(this.app.vault.on("create", () => this.scheduleScan(150, "vault-create")));
+    this.registerEvent(this.app.vault.on("rename", () => this.scheduleScan(150, "vault-rename")));
+    this.registerEvent(this.app.vault.on("delete", () => this.scheduleScan(150, "vault-delete")));
     this.registerDomEvent(document, "click", (event) => this.handleFolderTitleInteraction(event));
     this.registerDomEvent(document, "keydown", (event) => this.handleFolderTitleInteraction(event));
-    this.register(() => this.clearScanTimer());
+    this.registerDomEvent(window, "resize", () => this.scheduleScan(80, "window-resize"));
+    this.register(() => {
+      this.clearScanTimers();
+    });
 
-    this.app.workspace.onLayoutReady(() => this.scheduleScan());
+    this.app.workspace.onLayoutReady(() => {
+      this.debugAllFileExplorers("layout-ready-before-observe");
+      this.queueStartupScans();
+    });
   }
 
   onunload() {
-    this.clearScanTimer();
+    this.clearScanTimers();
+    this.removeDebugHelpers();
     this.restoreFileExplorer();
   }
 
@@ -222,6 +369,12 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     document.body.style.setProperty("--mfti-icon-opacity", String(this.settings.opacity));
   }
 
+  handleWorkspaceTreeChange() {
+    this.debugAllFileExplorers("workspace-tree-change-before-scan");
+    this.scheduleScan(80, "workspace-tree-change");
+    this.queueStartupScans();
+  }
+
   clearScanTimer() {
     if (this.scanTimer !== null) {
       window.clearTimeout(this.scanTimer);
@@ -229,28 +382,256 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     }
   }
 
-  scheduleScan() {
+  clearStartupScanTimers() {
+    this.startupScanTimers.forEach((timer) => window.clearTimeout(timer));
+    this.startupScanTimers.clear();
+  }
+
+  clearScanTimers() {
+    this.clearScanTimer();
+    this.clearStartupScanTimers();
+  }
+
+  scheduleScan(delay = 150, reason = "scheduled") {
     this.clearScanTimer();
     this.scanTimer = window.setTimeout(() => {
       this.scanTimer = null;
-      this.decorateFileExplorer();
-    }, 150);
+      this.decorateFileExplorer(reason);
+    }, delay);
   }
 
-  decorateFileExplorer() {
-    if (this.resourceStatus?.state !== RESOURCE_STATUS_READY) {
+  queueStartupScans() {
+    this.clearStartupScanTimers();
+    STARTUP_SCAN_DELAYS.forEach((delay) => {
+      const timer = window.setTimeout(() => {
+        this.startupScanTimers.delete(timer);
+        this.decorateFileExplorer(`startup-${delay}ms`);
+      }, delay);
+      this.startupScanTimers.add(timer);
+    });
+  }
+
+  installDebugHelpers() {
+    if (!DEBUG_FILE_TREE_LAYOUT || typeof window === "undefined") {
+      return;
+    }
+
+    window.__MFTI_CLEAR_LAYOUT_LOGS = () => {
+      window.__MFTI_LAYOUT_LOGS = [];
+      this.debugScanIndex = 0;
+      this.debugMutationLogCount = 0;
+      this.debugWarningLogCount = 0;
+      return "cleared";
+    };
+
+    window.__MFTI_CAPTURE_LAYOUT = () => {
+      this.debugAllFileExplorers("manual-capture");
+      return getDebugLayoutLogsJson();
+    };
+
+    window.__MFTI_DUMP_LAYOUT = () => getDebugLayoutLogsJson();
+  }
+
+  removeDebugHelpers() {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    delete window.__MFTI_CLEAR_LAYOUT_LOGS;
+    delete window.__MFTI_CAPTURE_LAYOUT;
+    delete window.__MFTI_DUMP_LAYOUT;
+  }
+
+  debugAllFileExplorers(label, extra = {}) {
+    if (!DEBUG_FILE_TREE_LAYOUT) {
       return;
     }
 
     const explorers = document.querySelectorAll('.workspace-leaf-content[data-type="file-explorer"]');
-    explorers.forEach((explorer) => {
-      if (this.settings.enableFolderIcons) {
-        explorer.querySelectorAll(".nav-folder-title").forEach((titleEl) => this.decorateTitle(titleEl, "folder"));
+    if (!explorers.length) {
+      const payload = {
+        bodyClass: document.body.className,
+        explorerCount: 0,
+        time: debugNow(),
+        ...extra
+      };
+      pushDebugLayoutLog({ type: "no-explorer", label, payload });
+      if (DEBUG_FILE_TREE_CONSOLE) {
+        console.debug("[mfti layout]", label, payload);
       }
+      return;
+    }
 
-      if (this.settings.enableFileIcons) {
-        explorer.querySelectorAll(".nav-file-title").forEach((titleEl) => this.decorateTitle(titleEl, "file"));
-      }
+    explorers.forEach((explorer, index) => this.debugFileExplorerLayout(explorer, `${label}#${index}`, extra));
+  }
+
+  debugFileExplorerLayout(explorer, label, extra = {}) {
+    if (!DEBUG_FILE_TREE_LAYOUT || !(explorer instanceof HTMLElement)) {
+      return;
+    }
+
+    const folders = Array.from(explorer.querySelectorAll(".nav-folder-title"))
+      .slice(0, DEBUG_FILE_TREE_FOLDER_LIMIT)
+      .map((titleEl) => getFolderLayoutDebugRow(titleEl));
+    const explorerRect = elementRectToObject(explorer);
+    const scrollEl = explorer.querySelector(".nav-files-container") || explorer;
+    const payload = {
+      label,
+      index: ++this.debugScanIndex,
+      time: debugNow(),
+      bodyClass: document.body.className,
+      resourceStatus: this.resourceStatus,
+      settings: {
+        enableFileIcons: this.settings.enableFileIcons,
+        enableFolderIcons: this.settings.enableFolderIcons,
+        enableFolderArrows: this.settings.enableFolderArrows,
+        iconSize: this.settings.iconSize
+      },
+      explorer: {
+        className: explorer.className,
+        rect: explorerRect,
+        scrollTop: scrollEl.scrollTop,
+        scrollHeight: scrollEl.scrollHeight,
+        clientHeight: scrollEl.clientHeight
+      },
+      counts: {
+        folders: explorer.querySelectorAll(".nav-folder-title").length,
+        files: explorer.querySelectorAll(".nav-file-title").length,
+        branchLines: explorer.querySelectorAll(".mfti-folder-branch-line").length,
+        arrows: explorer.querySelectorAll(".mfti-folder-arrow").length,
+        spacers: explorer.querySelectorAll(".mfti-arrow-spacer").length
+      },
+      folders,
+      ...extra
+    };
+
+    if (shouldStoreDebugLayoutLabel(label)) {
+      pushDebugLayoutLog({ type: "explorer-layout", label, payload });
+    }
+
+    if (DEBUG_FILE_TREE_CONSOLE) {
+      console.groupCollapsed(`[mfti layout] ${label} #${payload.index}`);
+      console.log(payload);
+      console.table(folders.map((folder) => ({
+        path: folder.path,
+        depth: folder.depth,
+        topLevel: folder.isTopLevel,
+        collapsed: folder.isCollapsed,
+        directChildren: folder.directChildCount,
+        hasLine: folder.hasLine,
+        folderTop: folder.folderRect?.top,
+        folderHeight: folder.folderRect?.height,
+        titleTop: folder.titleRect?.top,
+        titleHeight: folder.titleRect?.height,
+        arrowLeft: folder.arrowRect?.left,
+        arrowTop: folder.arrowRect?.top,
+        arrowHeight: folder.arrowRect?.height,
+        childrenTop: folder.childrenRect?.top,
+        childrenHeight: folder.childrenRect?.height,
+        lineLeftVar: folder.lineVars.left,
+        lineTopVar: folder.lineVars.top,
+        lineHeightVar: folder.lineVars.height,
+        lineTop: folder.lineRect?.top,
+        lineHeight: folder.lineRect?.height
+      })));
+      console.groupEnd();
+    }
+  }
+
+  debugMutationSummary(mutations) {
+    if (!DEBUG_FILE_TREE_LAYOUT) {
+      return;
+    }
+
+    if (this.debugMutationLogCount >= DEBUG_FILE_TREE_MUTATION_LIMIT) {
+      return;
+    }
+
+    this.debugMutationLogCount += 1;
+
+    const payload = {
+      time: debugNow(),
+      mutations: mutations.slice(0, 20).map((mutation) => ({
+        type: mutation.type,
+        attributeName: mutation.attributeName,
+        oldValue: mutation.oldValue,
+        target: describeDebugElement(mutation.target),
+        added: mutation.addedNodes.length,
+        removed: mutation.removedNodes.length
+      }))
+    };
+    pushDebugLayoutLog({ type: "mutation", label: "mutation-observer", payload });
+    if (DEBUG_FILE_TREE_CONSOLE) {
+      console.debug("[mfti layout] mutation-observer", payload);
+    }
+  }
+
+  debugFolderLineDecision(reason, titleEl, detail = {}) {
+    if (!DEBUG_FILE_TREE_LAYOUT) {
+      return;
+    }
+
+    const shouldWarn = detail.missingArrow
+      || detail.badRect
+      || (typeof detail.computedHeight === "number" && detail.computedHeight <= 1)
+      || (detail.shouldShowLine === false && !detail.isCollapsed && detail.directChildCount > 0);
+
+    if (!shouldWarn) {
+      return;
+    }
+
+    if (this.debugWarningLogCount >= DEBUG_FILE_TREE_WARNING_LIMIT) {
+      return;
+    }
+
+    this.debugWarningLogCount += 1;
+
+    const payload = {
+      reason,
+      detail,
+      folder: getFolderLayoutDebugRow(titleEl),
+      time: debugNow()
+    };
+    pushDebugLayoutLog({ type: "branch-line-warning", label: reason, payload });
+    if (DEBUG_FILE_TREE_CONSOLE) {
+      console.warn("[mfti layout] branch-line decision", payload);
+    }
+  }
+
+  decorateFileExplorer(reason = "scan") {
+    if (this.resourceStatus?.state !== RESOURCE_STATUS_READY) {
+      this.debugAllFileExplorers(`${reason}:resource-not-ready`, { resourceStatus: this.resourceStatus });
+      return;
+    }
+
+    this.suppressFileExplorerMutations = true;
+    const explorers = document.querySelectorAll('.workspace-leaf-content[data-type="file-explorer"]');
+    explorers.forEach((explorer) => {
+      this.decorateVisibleExplorer(explorer, reason);
+    });
+
+    if (!explorers.length) {
+      this.suppressFileExplorerMutations = false;
+    }
+  }
+
+  decorateVisibleExplorer(explorer, reason = "scan") {
+    this.debugFileExplorerLayout(explorer, `${reason}:before-decorate`);
+
+    if (this.settings.enableFolderIcons) {
+      explorer.querySelectorAll(".nav-folder-title").forEach((titleEl) => this.decorateTitle(titleEl, "folder"));
+    }
+
+    if (this.settings.enableFileIcons) {
+      explorer.querySelectorAll(".nav-file-title").forEach((titleEl) => this.decorateTitle(titleEl, "file"));
+    }
+
+    this.refreshFolderBranchLines(explorer, `${reason}:sync`);
+    this.debugFileExplorerLayout(explorer, `${reason}:after-sync`);
+    window.requestAnimationFrame(() => {
+      this.refreshFolderBranchLines(explorer, `${reason}:raf-1`);
+      this.debugFileExplorerLayout(explorer, `${reason}:after-raf-1`);
+      this.suppressFileExplorerMutations = false;
     });
   }
 
@@ -274,7 +655,10 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
 
     if (type === "folder") {
       this.ensureFolderArrow(titleEl, contentEl);
+    } else {
+      this.ensureFileArrowSpacer(titleEl, contentEl);
     }
+    applyTreeTitleIndentation(titleEl, type, path);
 
     const icon = type === "folder" ? this.getFolderIcon(path, titleEl) : this.getFileIcon(path);
     this.ensureIcon(titleEl, contentEl, icon);
@@ -284,13 +668,32 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     titleEl.classList.toggle("mfti-file-decorated", type === "file");
 
     if (type === "folder") {
-      window.requestAnimationFrame(() => this.repairFolderChildrenFlow(titleEl));
+      this.ensureFolderBranchLine(titleEl);
+      window.requestAnimationFrame(() => {
+        this.repairFolderChildrenFlow(titleEl);
+        this.ensureFolderBranchLine(titleEl);
+      });
     }
+  }
+
+  refreshFolderBranchLines(explorer, reason = "refresh") {
+    if (!(explorer instanceof HTMLElement)) {
+      return;
+    }
+
+    explorer.querySelectorAll(".nav-folder-title").forEach((titleEl) => {
+      this.repairFolderChildrenFlow(titleEl);
+      this.ensureFolderBranchLine(titleEl, reason);
+    });
   }
 
   ensureFolderArrow(titleEl, contentEl) {
     if (!this.settings.enableFolderArrows) {
       titleEl.querySelectorAll(":scope > .mfti-folder-arrow").forEach((el) => el.remove());
+      const folderEl = titleEl.closest(".nav-folder");
+      if (folderEl instanceof HTMLElement) {
+        this.clearFolderBranchLine(folderEl);
+      }
       return;
     }
 
@@ -308,6 +711,116 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
 
     arrowEl.classList.toggle("is-open", isFolderOpen(titleEl));
     arrowEl.setAttribute("aria-label", isFolderOpen(titleEl) ? "Collapse folder" : "Expand folder");
+  }
+
+  ensureFolderBranchLine(titleEl, reason = "ensure") {
+    const folderEl = titleEl.closest(".nav-folder");
+    if (!(folderEl instanceof HTMLElement)) {
+      return;
+    }
+
+    const isTopLevel = isTopLevelFolder(folderEl);
+    folderEl.classList.toggle("mfti-top-level-folder", isTopLevel);
+
+    const childrenEl = folderEl.querySelector(":scope > .nav-folder-children, :scope > .tree-item-children");
+    const directChildCount = childrenEl instanceof HTMLElement
+      ? childrenEl.querySelectorAll(":scope > .nav-folder, :scope > .nav-file, :scope > .tree-item").length
+      : 0;
+    const shouldMaintainLine = this.settings.enableFolderArrows
+      && childrenEl instanceof HTMLElement
+      && directChildCount > 0;
+
+    if (!shouldMaintainLine) {
+      this.debugFolderLineDecision(reason, titleEl, {
+        directChildCount,
+        isCollapsed: folderEl.classList.contains("is-collapsed"),
+        isTopLevel,
+        shouldMaintainLine
+      });
+      this.clearFolderBranchLine(folderEl);
+      return;
+    }
+
+    let lineEl = folderEl.querySelector(":scope > .mfti-folder-branch-line");
+    if (!lineEl) {
+      lineEl = createFolderBranchLineElement();
+      folderEl.insertBefore(lineEl, childrenEl);
+    }
+
+    folderEl.classList.add("mfti-has-branch-line");
+    if (folderEl.classList.contains("is-collapsed")) {
+      this.updateFolderBranchLineAnchor(folderEl, titleEl, lineEl, reason);
+      lineEl.style.removeProperty("--mfti-tree-line-height");
+      return;
+    }
+
+    this.updateFolderBranchLineGeometry(folderEl, titleEl, childrenEl, lineEl, reason);
+  }
+
+  clearFolderBranchLine(folderEl) {
+    folderEl.querySelectorAll(":scope > .mfti-folder-branch-line").forEach((el) => el.remove());
+    folderEl.classList.remove("mfti-has-branch-line");
+  }
+
+  updateFolderBranchLineAnchor(folderEl, titleEl, lineEl, reason = "anchor") {
+    const arrowEl = titleEl.querySelector(":scope > .mfti-folder-arrow");
+    if (!(arrowEl instanceof HTMLElement)) {
+      this.debugFolderLineDecision(reason, titleEl, { missingArrow: true });
+      return null;
+    }
+
+    const folderRect = folderEl.getBoundingClientRect();
+    const arrowRect = arrowEl.getBoundingClientRect();
+    if (!folderRect.width || !folderRect.height || !arrowRect.width || !arrowRect.height) {
+      this.debugFolderLineDecision(reason, titleEl, {
+        badRect: true,
+        arrowRect: rectToObject(arrowRect),
+        folderRect: rectToObject(folderRect)
+      });
+      return null;
+    }
+
+    const arrowSize = Number.parseFloat(getComputedStyle(document.body).getPropertyValue("--mfti-arrow-size"))
+      || arrowRect.width
+      || 14;
+    const left = arrowRect.left + (arrowRect.width / 2) - folderRect.left;
+    const top = arrowRect.top - folderRect.top + (arrowRect.height / 2) + (arrowSize / 2);
+
+    lineEl.style.setProperty("--mfti-tree-line-left", `${roundCssPixel(left)}px`);
+    lineEl.style.setProperty("--mfti-tree-line-top-dynamic", `${roundCssPixel(top)}px`);
+    return { folderRect, left, top };
+  }
+
+  updateFolderBranchLineGeometry(folderEl, titleEl, childrenEl, lineEl, reason = "geometry") {
+    const anchor = this.updateFolderBranchLineAnchor(folderEl, titleEl, lineEl, reason);
+    if (!anchor) {
+      return;
+    }
+
+    const bottom = getVisibleFolderChildrenBottom(childrenEl);
+    const height = Math.max(0, bottom - anchor.folderRect.top - anchor.top);
+
+    lineEl.style.setProperty("--mfti-tree-line-height", `${roundCssPixel(height)}px`);
+    this.debugFolderLineDecision(reason, titleEl, {
+      bottom: roundCssPixel(bottom),
+      computedHeight: roundCssPixel(height),
+      computedLeft: roundCssPixel(anchor.left),
+      computedTop: roundCssPixel(anchor.top)
+    });
+  }
+
+  ensureFileArrowSpacer(titleEl, contentEl) {
+    if (!this.settings.enableFolderArrows) {
+      titleEl.querySelectorAll(":scope > .mfti-arrow-spacer").forEach((el) => el.remove());
+      return;
+    }
+
+    let spacerEl = titleEl.querySelector(":scope > .mfti-arrow-spacer");
+    if (!spacerEl) {
+      spacerEl = createArrowSpacerElement();
+      const iconEl = titleEl.querySelector(":scope > .mfti-row-icon");
+      titleEl.insertBefore(spacerEl, iconEl || contentEl);
+    }
   }
 
   ensureIcon(titleEl, contentEl, iconFileName) {
@@ -388,13 +901,14 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   }
 
   toggleFolder(titleEl) {
+    this.prepareFolderInteraction(titleEl);
     const nativeToggle = titleEl.querySelector(":scope > .collapse-icon, :scope > .nav-folder-collapse-indicator");
     if (nativeToggle instanceof HTMLElement) {
       nativeToggle.click();
     } else {
       titleEl.click();
     }
-    window.setTimeout(() => this.scheduleScan(), 60);
+    this.scheduleFolderInteractionScan(titleEl, "folder-arrow-toggle");
   }
 
   handleFolderTitleInteraction(event) {
@@ -416,16 +930,39 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       return;
     }
 
-    window.setTimeout(() => this.scheduleScan(), 60);
+    this.prepareFolderInteraction(titleEl);
+    this.scheduleFolderInteractionScan(titleEl, "folder-title-toggle");
+  }
+
+  prepareFolderInteraction(titleEl) {
+    const folderEl = titleEl.closest(".nav-folder");
+    const childrenEl = folderEl?.querySelector(":scope > .nav-folder-children, :scope > .tree-item-children");
+    const lineEl = folderEl?.querySelector(":scope > .mfti-folder-branch-line");
+    if (folderEl instanceof HTMLElement && childrenEl instanceof HTMLElement && lineEl instanceof HTMLElement) {
+      this.updateFolderBranchLineGeometry(folderEl, titleEl, childrenEl, lineEl, "interaction-prepare");
+    }
+  }
+
+  scheduleFolderInteractionScan(titleEl, reason) {
+    window.requestAnimationFrame(() => {
+      const explorer = titleEl.closest('.workspace-leaf-content[data-type="file-explorer"]');
+      if (explorer instanceof HTMLElement) {
+        this.suppressFileExplorerMutations = true;
+        this.decorateVisibleExplorer(explorer, `${reason}-raf`);
+      }
+    });
   }
 
   restoreTitle(titleEl) {
     titleEl.querySelectorAll(":scope > .mfti-row-icon").forEach((el) => el.remove());
     titleEl.querySelectorAll(":scope > .mfti-folder-arrow").forEach((el) => el.remove());
+    titleEl.querySelectorAll(":scope > .mfti-arrow-spacer").forEach((el) => el.remove());
     titleEl.querySelectorAll(".mfti-extension").forEach((el) => el.remove());
+    restoreTreeTitleIndentation(titleEl);
     titleEl.classList.remove("mfti-title-decorated", "mfti-folder-decorated", "mfti-file-decorated");
     const folderEl = titleEl.closest(".nav-folder, .tree-item");
     if (folderEl instanceof HTMLElement) {
+      this.clearFolderBranchLine(folderEl);
       this.clearFolderChildrenFlowRepair(folderEl);
     }
   }
@@ -433,10 +970,18 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   restoreFileExplorer(options = {}) {
     document.querySelectorAll(".mfti-row-icon, [data-mfti-icon]").forEach((el) => el.remove());
     document.querySelectorAll(".mfti-folder-arrow, [data-mfti-folder-arrow]").forEach((el) => el.remove());
+    document.querySelectorAll(".mfti-arrow-spacer, [data-mfti-arrow-spacer]").forEach((el) => el.remove());
+    document.querySelectorAll(".mfti-folder-branch-line, [data-mfti-folder-branch-line]").forEach((el) => el.remove());
     document.querySelectorAll(".mfti-extension").forEach((el) => el.remove());
+    document.querySelectorAll("[data-mfti-tree-depth], [data-mfti-original-padding-inline-start-set='true']").forEach((el) => {
+      restoreTreeTitleIndentation(el);
+    });
     document.querySelectorAll(".mfti-hidden-foreign-icon").forEach((el) => el.classList.remove("mfti-hidden-foreign-icon"));
     document.querySelectorAll(".mfti-title-decorated").forEach((el) => {
       el.classList.remove("mfti-title-decorated", "mfti-folder-decorated", "mfti-file-decorated", "mfti-renaming");
+    });
+    document.querySelectorAll(".mfti-has-branch-line, .mfti-top-level-folder").forEach((el) => {
+      el.classList.remove("mfti-has-branch-line", "mfti-top-level-folder");
     });
     document.querySelectorAll(".mfti-children-out-of-flow").forEach((el) => {
       el.classList.remove("mfti-children-out-of-flow");
@@ -589,6 +1134,23 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     return iconFiles.length;
   }
 
+  getNeutralFileTreeSnippetPath() {
+    return normalizePath(`${this.app.vault.configDir}/snippets/${NEUTRAL_FILE_TREE_SNIPPET_FILE}`);
+  }
+
+  async installNeutralFileTreeSnippet() {
+    const snippetPath = this.getNeutralFileTreeSnippetPath();
+    await ensureAdapterFolder(this.app.vault.adapter, dirname(snippetPath));
+    await this.app.vault.adapter.write(snippetPath, NEUTRAL_FILE_TREE_SNIPPET_CSS);
+  }
+
+  async removeNeutralFileTreeSnippet() {
+    const snippetPath = this.getNeutralFileTreeSnippetPath();
+    if (await this.app.vault.adapter.exists(snippetPath)) {
+      await this.app.vault.adapter.remove(snippetPath);
+    }
+  }
+
   async loadIconTheme() {
     try {
       const raw = await this.app.vault.adapter.read(normalizePath(`${this.pluginDir}/dist/material-icons.json`));
@@ -658,6 +1220,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
     this.renderLanguageControl(containerEl);
     this.renderGithubControls(containerEl);
     this.renderResourceControls(containerEl);
+    this.renderThemeCompatibilityControls(containerEl);
 
     new Setting(containerEl)
       .setName(t(this.plugin, "fileIconsName"))
@@ -841,6 +1404,34 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         .setButtonText(t(this.plugin, "importResourcesButton"))
         .onClick(() => inputEl.click()));
   }
+
+  renderThemeCompatibilityControls(containerEl) {
+    new Setting(containerEl)
+      .setName(t(this.plugin, "themeCompatibilityName"))
+      .setDesc(t(this.plugin, "themeCompatibilityDesc"))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "installNeutralFileTreeButton"))
+        .onClick(async () => {
+          try {
+            await this.plugin.installNeutralFileTreeSnippet();
+            new Notice(t(this.plugin, "neutralFileTreeInstalled"));
+          } catch (error) {
+            console.error("material-icon-theme-for-vault: failed to install neutral file tree snippet", error);
+            new Notice(t(this.plugin, "neutralFileTreeInstallFailed"));
+          }
+        }))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "resetNeutralFileTreeButton"))
+        .onClick(async () => {
+          try {
+            await this.plugin.removeNeutralFileTreeSnippet();
+            new Notice(t(this.plugin, "neutralFileTreeRemoved"));
+          } catch (error) {
+            console.error("material-icon-theme-for-vault: failed to remove neutral file tree snippet", error);
+            new Notice(t(this.plugin, "neutralFileTreeRemoveFailed"));
+          }
+        }));
+  }
 }
 
 function createIconElement() {
@@ -866,6 +1457,108 @@ function createFolderArrowElement() {
   return arrowEl;
 }
 
+function createArrowSpacerElement() {
+  const spacerEl = document.createElement("span");
+  spacerEl.className = "mfti-arrow-spacer";
+  spacerEl.dataset.mftiArrowSpacer = "true";
+  spacerEl.setAttribute("aria-hidden", "true");
+  return spacerEl;
+}
+
+function createFolderBranchLineElement() {
+  const lineEl = document.createElement("span");
+  lineEl.className = "mfti-folder-branch-line";
+  lineEl.dataset.mftiFolderBranchLine = "true";
+  lineEl.setAttribute("aria-hidden", "true");
+  return lineEl;
+}
+
+function applyTreeTitleIndentation(titleEl, type, path) {
+  if (!(titleEl instanceof HTMLElement)) {
+    return;
+  }
+
+  rememberInlineStyle(titleEl, "padding-inline-start", "mftiOriginalPaddingInlineStart", "mftiOriginalPaddingInlineStartPriority");
+  const depth = getTitleTreeDepth(titleEl, type, path);
+  const rowPadding = getBodyCssNumber("--mfti-row-padding-inline-start", 4);
+  const depthIndent = getBodyCssNumber("--mfti-tree-depth-indent", 21);
+  titleEl.dataset.mftiTreeDepth = String(depth);
+  titleEl.style.setProperty("padding-inline-start", `${roundCssPixel(rowPadding + (depth * depthIndent))}px`, "important");
+}
+
+function restoreTreeTitleIndentation(titleEl) {
+  if (!(titleEl instanceof HTMLElement)) {
+    return;
+  }
+
+  restoreInlineStyle(titleEl, "padding-inline-start", "mftiOriginalPaddingInlineStart", "mftiOriginalPaddingInlineStartPriority");
+  delete titleEl.dataset.mftiTreeDepth;
+}
+
+function getTitleTreeDepth(titleEl, type, path) {
+  const pathDepth = getPathTreeDepth(path, type);
+  if (pathDepth !== null) {
+    return pathDepth;
+  }
+
+  if (type === "folder") {
+    const folderEl = titleEl.closest(".nav-folder");
+    return folderEl instanceof HTMLElement ? getFolderDepth(folderEl) : 0;
+  }
+
+  const fileEl = titleEl.closest(".nav-file, .tree-item");
+  const parentFolder = fileEl?.parentElement?.closest(".nav-folder");
+  if (!(parentFolder instanceof HTMLElement) || parentFolder.classList.contains("mod-root")) {
+    return 0;
+  }
+
+  return getFolderDepth(parentFolder) + 1;
+}
+
+function getPathTreeDepth(path, type) {
+  const segments = String(path || "").split("/").filter(Boolean);
+  if (!segments.length) {
+    return null;
+  }
+
+  return Math.max(0, segments.length - 1);
+}
+
+function getBodyCssNumber(propertyName, fallback) {
+  const value = Number.parseFloat(getComputedStyle(document.body).getPropertyValue(propertyName));
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function rememberInlineStyle(element, propertyName, valueKey, priorityKey) {
+  const flagKey = `${valueKey}Set`;
+  if (element.dataset[flagKey] === "true") {
+    return;
+  }
+
+  element.dataset[valueKey] = element.style.getPropertyValue(propertyName);
+  element.dataset[priorityKey] = element.style.getPropertyPriority(propertyName);
+  element.dataset[flagKey] = "true";
+}
+
+function restoreInlineStyle(element, propertyName, valueKey, priorityKey) {
+  const flagKey = `${valueKey}Set`;
+  if (element.dataset[flagKey] !== "true") {
+    return;
+  }
+
+  const value = element.dataset[valueKey] || "";
+  const priority = element.dataset[priorityKey] || "";
+  if (value) {
+    element.style.setProperty(propertyName, value, priority);
+  } else {
+    element.style.removeProperty(propertyName);
+  }
+
+  delete element.dataset[valueKey];
+  delete element.dataset[priorityKey];
+  delete element.dataset[flagKey];
+}
+
 function getPath(titleEl, contentEl) {
   return (titleEl.getAttribute("data-path")
     || titleEl.closest("[data-path]")?.getAttribute("data-path")
@@ -883,6 +1576,224 @@ function isRenamingTitle(titleEl) {
 function isFolderOpen(titleEl) {
   const folder = titleEl.closest(".nav-folder");
   return Boolean(folder && !folder.classList.contains("is-collapsed"));
+}
+
+function isTopLevelFolder(folderEl) {
+  const parentFolder = folderEl.parentElement?.closest(".nav-folder");
+  return !parentFolder || parentFolder.classList.contains("mod-root");
+}
+
+function getVisibleFolderChildrenBottom(childrenEl) {
+  let bottom = childrenEl.getBoundingClientRect().bottom;
+  childrenEl.querySelectorAll(".nav-folder-title, .nav-file-title, .tree-item-self").forEach((rowEl) => {
+    if (!(rowEl instanceof HTMLElement)) {
+      return;
+    }
+
+    const rowRect = rowEl.getBoundingClientRect();
+    if (rowRect.width > 0 && rowRect.height > 0) {
+      bottom = Math.max(bottom, rowRect.bottom);
+    }
+  });
+  return bottom;
+}
+
+function roundCssPixel(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function isPluginOnlyMutation(mutation) {
+  if (mutation.type === "attributes") {
+    if (!(mutation.target instanceof HTMLElement)) {
+      return false;
+    }
+
+    if (isPluginManagedElement(mutation.target)) {
+      return true;
+    }
+
+    if (mutation.attributeName === "class") {
+      const previous = new Set(String(mutation.oldValue || "").split(/\s+/).filter(Boolean));
+      const current = new Set(String(mutation.target.className || "").split(/\s+/).filter(Boolean));
+      const changed = [
+        ...[...previous].filter((className) => !current.has(className)),
+        ...[...current].filter((className) => !previous.has(className))
+      ];
+      if (!changed.length) {
+        return true;
+      }
+      return changed.length > 0 && changed.every((className) => className.startsWith("mfti-"));
+    }
+
+    if (mutation.attributeName === "style") {
+      const oldStyle = String(mutation.oldValue || "");
+      const currentStyle = String(mutation.target.getAttribute("style") || "");
+      if (oldStyle === currentStyle) {
+        return true;
+      }
+      return oldStyle.includes("--mfti-")
+        || currentStyle.includes("--mfti-")
+        || [...mutation.target.classList].some((className) => className.startsWith("mfti-"));
+    }
+
+    return false;
+  }
+
+  if (mutation.type !== "childList") {
+    return false;
+  }
+
+  const changedElements = [...mutation.addedNodes, ...mutation.removedNodes]
+    .filter((node) => node instanceof HTMLElement);
+
+  return changedElements.length > 0 && changedElements.every((node) => isPluginManagedElement(node));
+}
+
+function isPluginManagedElement(element) {
+  return Boolean(element.closest(".mfti-folder-branch-line, .mfti-folder-arrow, .mfti-arrow-spacer, .mfti-row-icon, .mfti-extension"));
+}
+
+function getFolderLayoutDebugRow(titleEl) {
+  const folderEl = titleEl instanceof HTMLElement ? titleEl.closest(".nav-folder") : null;
+  const contentEl = titleEl instanceof HTMLElement ? titleEl.querySelector(".nav-folder-title-content") : null;
+  const childrenEl = folderEl instanceof HTMLElement
+    ? folderEl.querySelector(":scope > .nav-folder-children, :scope > .tree-item-children")
+    : null;
+  const arrowEl = titleEl instanceof HTMLElement ? titleEl.querySelector(":scope > .mfti-folder-arrow") : null;
+  const lineEl = folderEl instanceof HTMLElement ? folderEl.querySelector(":scope > .mfti-folder-branch-line") : null;
+  const titleStyle = titleEl instanceof HTMLElement ? getComputedStyle(titleEl) : null;
+  const childrenStyle = childrenEl instanceof HTMLElement ? getComputedStyle(childrenEl) : null;
+  const lineStyle = lineEl instanceof HTMLElement ? getComputedStyle(lineEl) : null;
+
+  return {
+    path: contentEl instanceof HTMLElement ? getPath(titleEl, contentEl) : "",
+    text: contentEl?.textContent?.trim() || titleEl?.textContent?.trim() || "",
+    depth: contentEl instanceof HTMLElement ? getTitleTreeDepth(titleEl, "folder", getPath(titleEl, contentEl)) : null,
+    isTopLevel: folderEl instanceof HTMLElement ? isTopLevelFolder(folderEl) : null,
+    isCollapsed: folderEl instanceof HTMLElement ? folderEl.classList.contains("is-collapsed") : null,
+    directChildCount: childrenEl instanceof HTMLElement
+      ? childrenEl.querySelectorAll(":scope > .nav-folder, :scope > .nav-file, :scope > .tree-item").length
+      : 0,
+    hasLine: lineEl instanceof HTMLElement,
+    titleClass: titleEl?.className || "",
+    folderClass: folderEl?.className || "",
+    childrenClass: childrenEl?.className || "",
+    folderRect: elementRectToObject(folderEl),
+    titleRect: elementRectToObject(titleEl),
+    arrowRect: elementRectToObject(arrowEl),
+    childrenRect: elementRectToObject(childrenEl),
+    lineRect: elementRectToObject(lineEl),
+    titleCss: titleStyle ? {
+      display: titleStyle.display,
+      paddingInlineStart: titleStyle.paddingInlineStart,
+      position: titleStyle.position
+    } : {},
+    childrenCss: childrenStyle ? {
+      borderInlineStart: childrenStyle.borderInlineStart,
+      display: childrenStyle.display,
+      marginInlineStart: childrenStyle.marginInlineStart,
+      overflow: childrenStyle.overflow,
+      paddingInlineStart: childrenStyle.paddingInlineStart,
+      position: childrenStyle.position
+    } : {},
+    lineCss: lineStyle ? {
+      backgroundColor: lineStyle.backgroundColor,
+      display: lineStyle.display,
+      height: lineStyle.height,
+      left: lineStyle.left,
+      position: lineStyle.position,
+      top: lineStyle.top,
+      width: lineStyle.width,
+      zIndex: lineStyle.zIndex
+    } : {},
+    lineVars: lineEl instanceof HTMLElement ? {
+      height: lineEl.style.getPropertyValue("--mfti-tree-line-height"),
+      left: lineEl.style.getPropertyValue("--mfti-tree-line-left"),
+      top: lineEl.style.getPropertyValue("--mfti-tree-line-top-dynamic")
+    } : {
+      height: "",
+      left: "",
+      top: ""
+    }
+  };
+}
+
+function getFolderDepth(folderEl) {
+  let depth = 0;
+  let parentFolder = folderEl.parentElement?.closest(".nav-folder");
+  while (parentFolder && !parentFolder.classList.contains("mod-root")) {
+    depth += 1;
+    parentFolder = parentFolder.parentElement?.closest(".nav-folder");
+  }
+  return depth;
+}
+
+function elementRectToObject(element) {
+  if (!(element instanceof Element)) {
+    return null;
+  }
+  return rectToObject(element.getBoundingClientRect());
+}
+
+function rectToObject(rect) {
+  if (!rect) {
+    return null;
+  }
+  return {
+    bottom: roundCssPixel(rect.bottom),
+    height: roundCssPixel(rect.height),
+    left: roundCssPixel(rect.left),
+    right: roundCssPixel(rect.right),
+    top: roundCssPixel(rect.top),
+    width: roundCssPixel(rect.width)
+  };
+}
+
+function describeDebugElement(node) {
+  if (!(node instanceof Element)) {
+    return String(node?.nodeName || "unknown");
+  }
+
+  const text = node.textContent?.trim().replace(/\s+/g, " ").slice(0, 80) || "";
+  return {
+    className: node.className,
+    nodeName: node.nodeName,
+    path: node.getAttribute("data-path"),
+    text
+  };
+}
+
+function debugNow() {
+  return typeof performance !== "undefined" ? roundCssPixel(performance.now()) : Date.now();
+}
+
+function shouldStoreDebugLayoutLabel(label) {
+  return label.includes("manual-capture")
+    || label.startsWith("onload-after-body-state")
+    || label.startsWith("layout-ready-before-observe")
+    || label.startsWith("workspace-tree-change-before-scan")
+    || /^startup-(0|80|220|500|1000|1800|3000)ms:(before-decorate|after-sync|after-raf-2)/.test(label)
+    || label.includes("resource-not-ready");
+}
+
+function getDebugLayoutLogsJson() {
+  const logs = Array.isArray(window.__MFTI_LAYOUT_LOGS) ? window.__MFTI_LAYOUT_LOGS : [];
+  return JSON.stringify(logs, null, 2);
+}
+
+function pushDebugLayoutLog(entry) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (!Array.isArray(window.__MFTI_LAYOUT_LOGS)) {
+    window.__MFTI_LAYOUT_LOGS = [];
+  }
+
+  window.__MFTI_LAYOUT_LOGS.push(entry);
+  if (window.__MFTI_LAYOUT_LOGS.length > DEBUG_FILE_TREE_LOG_LIMIT) {
+    window.__MFTI_LAYOUT_LOGS.shift();
+  }
 }
 
 function basename(path) {

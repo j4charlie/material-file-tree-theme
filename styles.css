@@ -1,205 +1,39 @@
 body.material-icon-theme-for-vault-enabled {
   --mfti-icon-size: 16px;
   --mfti-icon-opacity: 1;
-  --mfti-arrow-size: 14px;
-  --mfti-arrow-center: 7px;
-  --mfti-arrow-gap: 2px;
   --mfti-icon-gap: 6px;
-  --mfti-row-min-height: max(24px, calc(var(--mfti-icon-size) + 6px));
-  --mfti-row-padding-inline-start: 4px;
-  --mfti-tree-indent-gap: 5px;
-  --mfti-tree-depth-indent: 16px;
-  --mfti-tree-line-color: rgba(128, 128, 128, 0.35);
-  --mfti-tree-line-width: 1px;
-  --mfti-tree-line-offset: calc(var(--mfti-row-padding-inline-start) + var(--mfti-arrow-center));
-  --mfti-tree-line-top: 19px;
-  --mfti-row-hover-background: rgba(128, 128, 128, 0.12);
-  --mfti-row-active-background: rgba(128, 128, 128, 0.18);
 }
 
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated {
   align-items: center;
-  background-color: transparent;
-  border-radius: 3px;
-  box-sizing: border-box;
-  display: flex !important;
-  min-height: var(--mfti-row-min-height);
+  display: flex;
   min-width: 0;
-  overflow: visible;
-  transition: background-color 80ms ease;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:hover,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children:hover,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children:hover {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-folder-title:hover,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title:hover {
-  background-color: var(--mfti-row-hover-background) !important;
-  color: var(--nav-item-color-hover);
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title.is-active {
-  background-color: var(--mfti-row-active-background) !important;
-  color: var(--nav-item-color-active);
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-folder-title,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.tree-item-self.is-clickable.nav-folder-title,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.tree-item-self.is-clickable.nav-file-title {
-  padding-inline-start: var(--mfti-row-padding-inline-start) !important;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.is-collapsed) > .nav-folder-children,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.is-collapsed) > .tree-item-children {
-  display: block;
-  height: auto;
-  min-height: 0;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.mod-root) {
-  overflow: visible;
-  position: relative;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder::before,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder::after,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children::before,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children::after,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children::before,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children::after {
-  content: none !important;
-  display: none !important;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-indentation-guide {
-  display: none !important;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder > .mfti-folder-branch-line {
-  background: var(--mfti-tree-line-color) !important;
-  content: "" !important;
-  display: block !important;
-  height: var(--mfti-tree-line-height, calc(100% - var(--mfti-tree-line-top))) !important;
-  left: var(--mfti-tree-line-left, var(--mfti-tree-line-offset)) !important;
-  pointer-events: none;
-  position: absolute !important;
-  top: var(--mfti-tree-line-top-dynamic, var(--mfti-tree-line-top)) !important;
-  transform: translateX(-50%) !important;
-  width: var(--mfti-tree-line-width) !important;
-  z-index: 4 !important;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.is-collapsed > .mfti-folder-branch-line {
-  display: none !important;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder > .nav-folder-children,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder > .tree-item-children {
-  border-left: none !important;
-  border-inline-start: none !important;
-  box-shadow: none !important;
-  overflow: visible;
-}
-
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.mod-root) > .nav-folder-children,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder:not(.mod-root) > .tree-item-children {
-  margin-left: var(--mfti-tree-line-offset) !important;
-  margin-inline-start: var(--mfti-tree-line-offset) !important;
-  padding-left: var(--mfti-tree-indent-gap) !important;
-  padding-inline-start: var(--mfti-tree-indent-gap) !important;
-  position: relative;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.mfti-children-out-of-flow:not(.is-collapsed),
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item.mfti-children-out-of-flow:not(.is-collapsed) {
-  padding-bottom: calc(var(--mfti-out-of-flow-child-count, 0) * var(--mfti-row-min-height));
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-children-flow-repaired {
-  min-height: calc(var(--mfti-out-of-flow-child-count, 0) * var(--mfti-row-min-height));
 }
 
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content,
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content {
-  flex: 1 1 auto;
-  margin-inline-start: 0 !important;
   min-width: 0;
-  order: 3;
   overflow: hidden;
-  padding-inline-start: 0 !important;
-  position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  z-index: 1;
 }
 
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon {
   align-items: center;
-  align-self: center;
   display: inline-flex;
   flex: 0 0 var(--mfti-icon-size);
   height: var(--mfti-icon-size);
   justify-content: center;
   margin-inline-end: var(--mfti-icon-gap);
-  min-width: var(--mfti-icon-size);
   opacity: var(--mfti-icon-opacity);
-  order: 2;
   pointer-events: none;
-  position: relative;
-  z-index: 1;
   width: var(--mfti-icon-size);
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow {
-  align-items: center;
-  align-self: center;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: inline-flex;
-  flex: 0 0 var(--mfti-arrow-size);
-  height: var(--mfti-row-min-height);
-  justify-content: center;
-  margin-inline-end: var(--mfti-arrow-gap);
-  min-width: var(--mfti-arrow-size);
-  opacity: 0.9;
-  order: 1;
-  pointer-events: auto;
-  position: relative;
-  z-index: 1;
-  width: var(--mfti-arrow-size);
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-arrow-spacer {
-  align-self: center;
-  display: inline-flex;
-  flex: 0 0 var(--mfti-arrow-size);
-  height: var(--mfti-row-min-height);
-  margin-inline-end: var(--mfti-arrow-gap);
-  min-width: var(--mfti-arrow-size);
-  order: 1;
-  pointer-events: none;
-  visibility: hidden;
-  width: var(--mfti-arrow-size);
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow svg {
-  display: block;
-  height: var(--mfti-arrow-size);
-  transform: rotate(0deg);
-  transition: transform 120ms ease;
-  width: var(--mfti-arrow-size);
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow.is-open svg {
-  transform: rotate(90deg);
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-arrow,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-arrow-spacer,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-branch-line {
+  display: none;
 }
 
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
@@ -220,57 +54,11 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
 }
 
 body.material-icon-theme-for-vault-enabled.mfti-hide-native-file-tags .workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {
-  display: none !important;
+  display: none;
 }
 
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .collapse-icon,
-body.material-icon-theme-for-vault-enabled.mfti-folder-arrows-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title > .nav-folder-collapse-indicator {
-  display: none !important;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-folder-title::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-folder-title::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content::after {
-  background: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  content: none !important;
-  display: none !important;
-  height: 0 !important;
-  margin: 0 !important;
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
-  opacity: 0 !important;
-  padding: 0 !important;
-  width: 0 !important;
-}
-
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .obsidian-icon-folder-icon,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-icon,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .tree-item-icon {
-  display: none !important;
-}
-
-body.material-icon-theme-for-vault-enabled.folder-icons .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content::before,
-body.material-icon-theme-for-vault-enabled:not(.remove-file-icons) .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content:not(.mk-tree-text)::before,
-body.material-icon-theme-for-vault-enabled.bt-toggle-colorful-folder .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content::before,
-body.material-icon-theme-for-vault-enabled.bt-toggle-colorful-folder .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content:not(.mk-tree-text)::before,
-body.material-icon-theme-for-vault-enabled.anp-file-icons .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated.nav-file-title[data-path]::before {
-  background: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  content: none !important;
-  display: none !important;
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
-}
-
-.mfti-github-support {
+.mfti-github-support,
+.mfti-resource-status {
   border: 1px solid var(--background-modifier-border);
   border-radius: 6px;
   margin: 0 0 12px;
@@ -281,18 +69,7 @@ body.material-icon-theme-for-vault-enabled.anp-file-icons .workspace-leaf-conten
   margin-top: 6px;
 }
 
-.mfti-github-usage strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.mfti-resource-status {
-  border: 1px solid var(--background-modifier-border);
-  border-radius: 6px;
-  margin: 0 0 12px;
-  padding: 10px 12px;
-}
-
+.mfti-github-usage strong,
 .mfti-resource-status strong {
   display: block;
   margin-bottom: 4px;

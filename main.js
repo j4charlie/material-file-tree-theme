@@ -1,4 +1,4 @@
-const { Notice, Plugin, PluginSettingTab, Setting, normalizePath } = require("obsidian");
+const { Notice, Plugin, PluginSettingTab, Setting, TFile, normalizePath } = require("obsidian");
 
 const BODY_CLASS = "material-icon-theme-for-vault-enabled";
 const GITHUB_REPOSITORY_URL = "https://github.com/j4charlie/material-icon-theme-for-vault";
@@ -7,6 +7,8 @@ const RESOURCE_DOWNLOAD_URL = "https://github.com/j4charlie/material-icon-theme-
 const RESOURCE_PACK_NAME = "material-icon-souce.zip";
 const RESOURCE_STATUS_READY = "ready";
 const RESOURCE_STATUS_MISSING = "missing";
+const CODE_FILES_PLUGIN_ID = "code-files";
+const CODE_FILES_VIEW_TYPE = "code-editor";
 const STARTUP_SCAN_DELAYS = [0, 160, 420];
 const DEBUG_FILE_TREE_LAYOUT = false;
 const DEBUG_FILE_TREE_CONSOLE = false;
@@ -317,6 +319,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     this.scanTimer = null;
     this.startupScanTimers = new Set();
     this.suppressFileExplorerMutations = false;
+    this.folderInteractionUntil = 0;
     this.debugScanIndex = 0;
     this.debugMutationLogCount = 0;
     this.debugWarningLogCount = 0;
@@ -334,6 +337,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     this.registerEvent(this.app.vault.on("create", () => this.scheduleScan(150, "vault-create")));
     this.registerEvent(this.app.vault.on("rename", () => this.scheduleScan(150, "vault-rename")));
     this.registerEvent(this.app.vault.on("delete", () => this.scheduleScan(150, "vault-delete")));
+    this.registerDomEvent(document, "click", (event) => this.handleCodeFilesFileOpen(event), { capture: true });
     this.registerDomEvent(document, "click", (event) => this.handleFolderTitleInteraction(event));
     this.registerDomEvent(document, "keydown", (event) => this.handleFolderTitleInteraction(event));
     this.registerDomEvent(window, "resize", () => this.scheduleScan(80, "window-resize"));
@@ -370,6 +374,10 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   }
 
   handleWorkspaceTreeChange() {
+    if (Date.now() < this.folderInteractionUntil) {
+      return;
+    }
+
     this.debugAllFileExplorers("workspace-tree-change-before-scan");
     this.scheduleScan(80, "workspace-tree-change");
     this.queueStartupScans();
@@ -626,10 +634,10 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       explorer.querySelectorAll(".nav-file-title").forEach((titleEl) => this.decorateTitle(titleEl, "file"));
     }
 
-    this.refreshFolderBranchLines(explorer, `${reason}:sync`);
+    this.refreshFolderBranchLines(explorer, `${reason}:sync`, { repairFlow: true });
     this.debugFileExplorerLayout(explorer, `${reason}:after-sync`);
     window.requestAnimationFrame(() => {
-      this.refreshFolderBranchLines(explorer, `${reason}:raf-1`);
+      this.refreshFolderBranchLines(explorer, `${reason}:raf-1`, { repairFlow: true });
       this.debugFileExplorerLayout(explorer, `${reason}:after-raf-1`);
       this.suppressFileExplorerMutations = false;
     });
@@ -669,22 +677,47 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
 
     if (type === "folder") {
       this.ensureFolderBranchLine(titleEl);
-      window.requestAnimationFrame(() => {
-        this.repairFolderChildrenFlow(titleEl);
-        this.ensureFolderBranchLine(titleEl);
-      });
     }
   }
 
-  refreshFolderBranchLines(explorer, reason = "refresh") {
-    if (!(explorer instanceof HTMLElement)) {
+  refreshFolderBranchLines(rootEl, reason = "refresh", options = {}) {
+    if (!(rootEl instanceof HTMLElement)) {
       return;
     }
 
-    explorer.querySelectorAll(".nav-folder-title").forEach((titleEl) => {
-      this.repairFolderChildrenFlow(titleEl);
+    rootEl.querySelectorAll(".nav-folder-title").forEach((titleEl) => {
+      if (options.repairFlow) {
+        this.repairFolderChildrenFlow(titleEl);
+      }
       this.ensureFolderBranchLine(titleEl, reason);
     });
+  }
+
+  decorateFolderSubtree(titleEl, reason = "folder-interaction") {
+    if (this.resourceStatus?.state !== RESOURCE_STATUS_READY || !(titleEl instanceof HTMLElement)) {
+      return;
+    }
+
+    const folderEl = titleEl.closest(".nav-folder");
+    if (!(folderEl instanceof HTMLElement)) {
+      return;
+    }
+
+    if (this.settings.enableFolderIcons) {
+      this.decorateTitle(titleEl, "folder");
+      folderEl.querySelectorAll(".nav-folder-title").forEach((childTitleEl) => {
+        if (childTitleEl !== titleEl) {
+          this.decorateTitle(childTitleEl, "folder");
+        }
+      });
+    }
+
+    if (this.settings.enableFileIcons) {
+      folderEl.querySelectorAll(".nav-file-title").forEach((fileTitleEl) => this.decorateTitle(fileTitleEl, "file"));
+    }
+
+    this.ensureFolderBranchLine(titleEl, reason);
+    this.refreshFolderBranchLines(folderEl, reason);
   }
 
   ensureFolderArrow(titleEl, contentEl) {
@@ -896,6 +929,8 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
 
     const extensionEl = document.createElement("span");
     extensionEl.className = "mfti-extension";
+    extensionEl.dataset.mftiExtension = "true";
+    extensionEl.setAttribute("aria-hidden", "true");
     extensionEl.textContent = ext;
     contentEl.appendChild(extensionEl);
   }
@@ -909,6 +944,76 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       titleEl.click();
     }
     this.scheduleFolderInteractionScan(titleEl, "folder-arrow-toggle");
+  }
+
+  handleCodeFilesFileOpen(event) {
+    if (event.defaultPrevented || event.button !== 0) {
+      return;
+    }
+
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const titleEl = target.closest('.workspace-leaf-content[data-type="file-explorer"] .nav-file-title');
+    if (!titleEl || isRenamingTitle(titleEl)) {
+      return;
+    }
+
+    const contentEl = titleEl.querySelector(".nav-file-title-content");
+    if (!(contentEl instanceof HTMLElement)) {
+      return;
+    }
+
+    const path = getPath(titleEl, contentEl);
+    if (!path || !this.isCodeFilesManagedPath(path)) {
+      return;
+    }
+
+    const file = this.app.vault.getAbstractFileByPath(path);
+    if (!(file instanceof TFile)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
+    this.openCodeFile(file, event);
+  }
+
+  isCodeFilesManagedPath(path) {
+    const codeFilesPlugin = this.app.plugins?.plugins?.[CODE_FILES_PLUGIN_ID];
+    const configuredExtensions = codeFilesPlugin?.settings?.extensions;
+    if (!Array.isArray(configuredExtensions)) {
+      return false;
+    }
+
+    const fileExt = extension(basename(path));
+    if (!fileExt) {
+      return false;
+    }
+
+    return configuredExtensions
+      .map((ext) => String(ext || "").trim().replace(/^\./, "").toLowerCase())
+      .filter(Boolean)
+      .includes(fileExt);
+  }
+
+  async openCodeFile(file, event) {
+    try {
+      const openInNewLeaf = Boolean(event?.metaKey || event?.ctrlKey);
+      const leaf = this.app.workspace.getLeaf(openInNewLeaf);
+      await leaf.setViewState({
+        type: CODE_FILES_VIEW_TYPE,
+        state: { file: file.path },
+        active: true
+      });
+      this.app.workspace.revealLeaf(leaf);
+    } catch (error) {
+      console.error("material-icon-theme-for-vault: failed to open Code Files view", error);
+      new Notice(`Failed to open ${file.name} with Code Files.`);
+    }
   }
 
   handleFolderTitleInteraction(event) {
@@ -944,12 +1049,17 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   }
 
   scheduleFolderInteractionScan(titleEl, reason) {
+    this.folderInteractionUntil = Date.now() + 500;
+    this.suppressFileExplorerMutations = true;
     window.requestAnimationFrame(() => {
-      const explorer = titleEl.closest('.workspace-leaf-content[data-type="file-explorer"]');
-      if (explorer instanceof HTMLElement) {
-        this.suppressFileExplorerMutations = true;
-        this.decorateVisibleExplorer(explorer, `${reason}-raf`);
-      }
+      this.decorateFolderSubtree(titleEl, `${reason}-raf-1`);
+      window.requestAnimationFrame(() => {
+        this.decorateFolderSubtree(titleEl, `${reason}-raf-2`);
+        window.setTimeout(() => {
+          this.decorateFolderSubtree(titleEl, `${reason}-settled`);
+          this.suppressFileExplorerMutations = false;
+        }, 60);
+      });
     });
   }
 

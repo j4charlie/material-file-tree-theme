@@ -216,6 +216,7 @@ body.material-icon-theme-for-vault-enabled.mfti-icon-grayscale .workspace-leaf-c
 
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-extension {
   color: inherit;
+  pointer-events: none;
 }
 
 body.material-icon-theme-for-vault-enabled.mfti-hide-native-file-tags .workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {

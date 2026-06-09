@@ -14,7 +14,7 @@ project for Obsidian's file explorer.
 - Icon matching driven by the upstream `dist/material-icons.json` mapping file.
 - Filename, compound extension, extension, language-id fallback, folder name, and expanded-folder name matching.
 - Settings for icon size, opacity, grayscale, and file/folder toggles.
-- A theme compatibility action that creates or removes a `neutral-file-tree`
+- A theme compatibility action that creates, enables, or removes a `neutral-file-tree`
   CSS snippet for suppressing theme file-tree colors while keeping plugin icons.
 
 ## Install locally

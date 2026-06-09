@@ -16,6 +16,10 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   white-space: nowrap;
 }
 
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-decorated .nav-folder-title-content {
+  margin-inline-start: 4px;
+}
+
 body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon {
   align-items: center;
   display: inline-flex;
@@ -35,6 +39,43 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   max-height: var(--mfti-icon-size);
   max-width: var(--mfti-icon-size);
   width: var(--mfti-icon-size);
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) {
+  align-items: center !important;
+  color: var(--nav-collapse-icon-color, var(--text-muted));
+  display: inline-flex !important;
+  flex: 0 0 16px;
+  height: 16px;
+  justify-content: center;
+  opacity: 1 !important;
+  overflow: visible;
+  position: relative;
+  width: 16px;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) svg {
+  opacity: 0 !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  content: "";
+  display: block !important;
+  height: 0;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center;
+  width: 0;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.is-collapsed > .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
 body.material-icon-theme-for-vault-enabled.mfti-icon-grayscale .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {

@@ -10,6 +10,102 @@ const RESOURCE_STATUS_MISSING = "missing";
 const DECORATION_VERSION = "observer-1";
 const INITIAL_SCAN_DELAYS = [0, 250, 900];
 const DECORATION_BATCH_SIZE = 120;
+const NEUTRAL_FILE_TREE_SNIPPET_NAME = "neutral-file-tree";
+const NEUTRAL_FILE_TREE_SNIPPET_FILE = `${NEUTRAL_FILE_TREE_SNIPPET_NAME}.css`;
+const NEUTRAL_FILE_TREE_SNIPPET_CSS = `/* Neutralize theme file explorer coloring while keeping plugin icons. */
+.workspace-leaf-content[data-type="file-explorer"] {
+  --nav-indentation-guide-color: var(--background-modifier-border) !important;
+  --nav-indentation-guide-width: 1px !important;
+  --text-folder-file-icon: var(--text-muted);
+  --folder-color: var(--text-muted);
+  --mfti-row-hover-background: rgba(128, 128, 128, 0.12);
+  --mfti-row-active-background: rgba(128, 128, 128, 0.18);
+  --tab-color: var(--text-muted);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  filter: none !important;
+  margin: 0 !important;
+  --tab-color: var(--text-muted) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-title,
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-folder-title,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title {
+  background-color: transparent !important;
+  border-radius: 3px !important;
+  color: var(--nav-item-color) !important;
+  filter: none !important;
+  text-decoration: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder:hover,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-folder-title:hover,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title:hover {
+  color: var(--nav-item-color-hover) !important;
+  background-color: var(--mfti-row-hover-background) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title.is-active,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.is-clickable.nav-file-title.is-active {
+  color: var(--nav-item-color-active) !important;
+  background-color: var(--mfti-row-active-background) !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::after,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::before,
+body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::after {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  content: none !important;
+  display: none !important;
+  filter: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder > .nav-folder-title::before,
+.workspace-leaf-content[data-type="file-explorer"] .nav-files-container > div > .tree-item.nav-folder > .tree-item-self.nav-folder-title::before {
+  content: none !important;
+  display: none !important;
+}
+`;
 
 const DEFAULT_SETTINGS = {
   language: "en",
@@ -125,6 +221,14 @@ const I18N = {
     opacityDesc: "Icon opacity.",
     grayscaleName: "Grayscale",
     grayscaleDesc: "Render icons in grayscale.",
+    themeCompatibilityName: "Theme compatibility",
+    themeCompatibilityDesc: "Create and enable a CSS snippet that neutralizes theme colors in the file tree while keeping plugin icons and native indentation guides.",
+    installNeutralFileTreeButton: "Install and enable CSS snippet",
+    resetNeutralFileTreeButton: "Remove snippet",
+    neutralFileTreeInstalled: "Created and enabled neutral-file-tree.",
+    neutralFileTreeInstallFailed: "Failed to create and enable neutral-file-tree CSS snippet.",
+    neutralFileTreeRemoved: "Removed neutral-file-tree CSS snippet.",
+    neutralFileTreeRemoveFailed: "Failed to remove neutral-file-tree CSS snippet.",
     githubName: "GitHub",
     githubDesc: "Report issues or support the project.",
     githubIssueButton: "Open issue",
@@ -161,6 +265,14 @@ const I18N = {
     opacityDesc: "图标透明度。",
     grayscaleName: "灰度",
     grayscaleDesc: "以灰度样式显示图标。",
+    themeCompatibilityName: "主题兼容",
+    themeCompatibilityDesc: "创建并启用 CSS 代码片段，用于屏蔽主题对文件树颜色的影响，同时保留插件图标和 Obsidian 原生缩进线。",
+    installNeutralFileTreeButton: "安装并启用 CSS 片段",
+    resetNeutralFileTreeButton: "移除片段",
+    neutralFileTreeInstalled: "已创建并启用 neutral-file-tree。",
+    neutralFileTreeInstallFailed: "创建并启用 neutral-file-tree CSS 片段失败。",
+    neutralFileTreeRemoved: "已移除 neutral-file-tree CSS 片段。",
+    neutralFileTreeRemoveFailed: "移除 neutral-file-tree CSS 片段失败。",
     githubName: "GitHub",
     githubDesc: "反馈问题或支持这个项目。",
     githubIssueButton: "提交 issue",
@@ -422,13 +534,15 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
 
     const iconEnabled = type === "folder" ? this.settings.enableFolderIcons : this.settings.enableFileIcons;
     const signature = this.getDecorationSignature(titleEl, type, lookupPath, iconEnabled);
-    if (titleEl.dataset.mftiSignature === signature && titleEl.classList.contains("mfti-title-decorated")) {
-      return;
-    }
-
     const icon = iconEnabled
       ? (type === "folder" ? this.getFolderIcon(lookupPath, titleEl) : this.getFileIcon(lookupPath))
       : null;
+
+    if (titleEl.dataset.mftiSignature === signature
+      && titleEl.classList.contains("mfti-title-decorated")
+      && isDecorationComplete(titleEl, contentEl, icon, type, path, this.settings.showFileExtensions)) {
+      return;
+    }
 
     if (icon) {
       this.ensureIcon(titleEl, contentEl, icon);
@@ -449,12 +563,18 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
   }
 
   ensureIcon(titleEl, contentEl, iconFileName) {
-    titleEl.querySelectorAll(":scope > .mfti-row-icon").forEach((el) => el.remove());
-    let iconEl = contentEl.querySelector(":scope > .mfti-row-icon");
+    let iconEl = getTitleIconElement(titleEl, contentEl);
     if (!iconEl) {
       iconEl = createIconElement();
-      contentEl.insertBefore(iconEl, contentEl.firstChild);
     }
+
+    contentEl.insertBefore(iconEl, contentEl.firstChild);
+
+    titleEl.querySelectorAll(".mfti-row-icon").forEach((el) => {
+      if (el !== iconEl) {
+        el.remove();
+      }
+    });
 
     if (iconEl.dataset.icon !== iconFileName) {
       const img = iconEl.querySelector("img");
@@ -637,6 +757,37 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     return iconFiles.length;
   }
 
+  getNeutralFileTreeSnippetPath() {
+    return normalizePath(`${this.app.vault.configDir}/snippets/${NEUTRAL_FILE_TREE_SNIPPET_FILE}`);
+  }
+
+  async installNeutralFileTreeSnippet() {
+    const snippetPath = this.getNeutralFileTreeSnippetPath();
+    await ensureAdapterFolder(this.app.vault.adapter, dirname(snippetPath));
+    await this.app.vault.adapter.write(snippetPath, NEUTRAL_FILE_TREE_SNIPPET_CSS);
+    await this.setNeutralFileTreeSnippetEnabled(true);
+  }
+
+  async removeNeutralFileTreeSnippet() {
+    const snippetPath = this.getNeutralFileTreeSnippetPath();
+    await this.setNeutralFileTreeSnippetEnabled(false);
+    if (await this.app.vault.adapter.exists(snippetPath)) {
+      await this.app.vault.adapter.remove(snippetPath);
+    }
+  }
+
+  async setNeutralFileTreeSnippetEnabled(enabled) {
+    const customCss = this.app.customCss;
+    if (customCss && typeof customCss.setCssEnabledStatus === "function") {
+      await customCss.setCssEnabledStatus(NEUTRAL_FILE_TREE_SNIPPET_NAME, enabled);
+      return;
+    }
+
+    const appearancePath = normalizePath(`${this.app.vault.configDir}/appearance.json`);
+    await updateEnabledCssSnippet(this.app.vault.adapter, appearancePath, NEUTRAL_FILE_TREE_SNIPPET_NAME, enabled);
+    await reloadCssSnippets(customCss);
+  }
+
   async loadIconTheme() {
     try {
       const raw = await this.app.vault.adapter.read(normalizePath(`${this.pluginDir}/dist/material-icons.json`));
@@ -708,6 +859,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
     containerEl.createEl("h2", { text: t(this.plugin, "settingsTitle") });
     this.renderLanguageControl(containerEl);
     this.renderResourceControls(containerEl);
+    this.renderThemeCompatibilityControls(containerEl);
     this.renderGithubControls(containerEl);
     this.renderIconControls(containerEl);
   }
@@ -784,6 +936,34 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
       .addButton((button) => button
         .setButtonText(t(this.plugin, "githubStarButton"))
         .onClick(() => window.open(GITHUB_REPOSITORY_URL)));
+  }
+
+  renderThemeCompatibilityControls(containerEl) {
+    new Setting(containerEl)
+      .setName(t(this.plugin, "themeCompatibilityName"))
+      .setDesc(t(this.plugin, "themeCompatibilityDesc"))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "installNeutralFileTreeButton"))
+        .onClick(async () => {
+          try {
+            await this.plugin.installNeutralFileTreeSnippet();
+            new Notice(t(this.plugin, "neutralFileTreeInstalled"));
+          } catch (error) {
+            console.error("material-icon-theme-for-vault: failed to install neutral file tree snippet", error);
+            new Notice(t(this.plugin, "neutralFileTreeInstallFailed"));
+          }
+        }))
+      .addButton((button) => button
+        .setButtonText(t(this.plugin, "resetNeutralFileTreeButton"))
+        .onClick(async () => {
+          try {
+            await this.plugin.removeNeutralFileTreeSnippet();
+            new Notice(t(this.plugin, "neutralFileTreeRemoved"));
+          } catch (error) {
+            console.error("material-icon-theme-for-vault: failed to remove neutral file tree snippet", error);
+            new Notice(t(this.plugin, "neutralFileTreeRemoveFailed"));
+          }
+        }));
   }
 
   renderIconControls(containerEl) {
@@ -914,8 +1094,7 @@ function collectRelatedTitleElement(node, titleEls) {
 
 function isPluginOnlyMutation(mutation) {
   if (mutation.type === "childList") {
-    const changedNodes = [...mutation.addedNodes, ...mutation.removedNodes].filter((node) => node instanceof HTMLElement);
-    return changedNodes.length > 0 && changedNodes.every((node) => isPluginManagedElement(node));
+    return false;
   }
 
   if (mutation.type === "attributes" && mutation.attributeName === "class" && mutation.target instanceof HTMLElement) {
@@ -933,6 +1112,33 @@ function isPluginOnlyMutation(mutation) {
 
 function isPluginManagedElement(element) {
   return Boolean(element.closest(".mfti-row-icon, .mfti-extension"));
+}
+
+function getTitleIconElement(titleEl, contentEl) {
+  return titleEl.querySelector(":scope > .mfti-row-icon") || contentEl.querySelector(":scope > .mfti-row-icon");
+}
+
+function isDecorationComplete(titleEl, contentEl, icon, type, path, showFileExtensions) {
+  const iconEl = getTitleIconElement(titleEl, contentEl);
+  if (icon) {
+    const imgEl = iconEl?.querySelector("img");
+    if (!(iconEl instanceof HTMLElement) || iconEl.dataset.icon !== icon || !(imgEl instanceof HTMLImageElement) || !imgEl.src) {
+      return false;
+    }
+  } else if (iconEl) {
+    return false;
+  }
+
+  if (type !== "file" || !showFileExtensions) {
+    return true;
+  }
+
+  const ext = fileExtensionSuffix(path);
+  if (!ext || fileTitleText(contentEl).toLowerCase().endsWith(ext.toLowerCase())) {
+    return true;
+  }
+
+  return Boolean(contentEl.querySelector(":scope > .mfti-extension"));
 }
 
 function getPath(titleEl, contentEl) {
@@ -1015,6 +1221,44 @@ async function ensureAdapterFolder(adapter, folderPath) {
     await ensureAdapterFolder(adapter, parent);
   }
   await adapter.mkdir(normalized);
+}
+
+async function updateEnabledCssSnippet(adapter, appearancePath, snippetName, enabled) {
+  let appearance = {};
+  if (await adapter.exists(appearancePath)) {
+    try {
+      appearance = JSON.parse(await adapter.read(appearancePath));
+    } catch (error) {
+      console.error("material-icon-theme-for-vault: failed to parse appearance.json", error);
+    }
+  }
+
+  const currentSnippets = Array.isArray(appearance.enabledCssSnippets) ? appearance.enabledCssSnippets : [];
+  const enabledSnippets = new Set(currentSnippets.filter((snippet) => typeof snippet === "string" && snippet.trim()));
+  if (enabled) {
+    enabledSnippets.add(snippetName);
+  } else {
+    enabledSnippets.delete(snippetName);
+  }
+
+  appearance.enabledCssSnippets = Array.from(enabledSnippets);
+  await ensureAdapterFolder(adapter, dirname(appearancePath));
+  await adapter.write(appearancePath, `${JSON.stringify(appearance, null, 2)}\n`);
+}
+
+async function reloadCssSnippets(customCss) {
+  if (!customCss) {
+    return;
+  }
+
+  if (typeof customCss.requestLoadSnippets === "function") {
+    customCss.requestLoadSnippets();
+    return;
+  }
+
+  if (typeof customCss.loadSnippets === "function") {
+    await customCss.loadSnippets();
+  }
 }
 
 function findResourceFile(files, normalizedPath) {

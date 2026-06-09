@@ -1,9 +1,9 @@
 const { Notice, Plugin, PluginSettingTab, Setting, normalizePath } = require("obsidian");
 
-const BODY_CLASS = "material-icon-theme-for-vault-enabled";
-const GITHUB_REPOSITORY_URL = "https://github.com/j4charlie/material-icon-theme-for-vault";
-const GITHUB_ISSUES_URL = "https://github.com/j4charlie/material-icon-theme-for-vault/issues";
-const RESOURCE_DOWNLOAD_URL = "https://github.com/j4charlie/material-icon-theme-for-vault/releases/latest";
+const BODY_CLASS = "material-file-tree-theme-enabled";
+const GITHUB_REPOSITORY_URL = "https://github.com/j4charlie/material-file-tree-theme";
+const GITHUB_ISSUES_URL = "https://github.com/j4charlie/material-file-tree-theme/issues";
+const RESOURCE_DOWNLOAD_URL = "https://github.com/j4charlie/material-file-tree-theme/releases/latest";
 const RESOURCE_PACK_NAME = "material-icon-souce.zip";
 const RESOURCE_STATUS_READY = "ready";
 const RESOURCE_STATUS_MISSING = "missing";
@@ -74,21 +74,21 @@ const NEUTRAL_FILE_TREE_SNIPPET_CSS = `/* Neutralize theme file explorer colorin
   filter: none !important;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .tree-item-children {
   background: transparent !important;
   box-shadow: none !important;
   filter: none !important;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::after,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::before,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::after {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::before,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title::after,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::before,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title::after,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::before,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title-content::after,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::before,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-file-title-content::after {
   background: none !important;
   background-color: transparent !important;
   background-image: none !important;
@@ -191,7 +191,7 @@ const EXTENSION_LANGUAGE_IDS = {
 
 const I18N = {
   en: {
-    settingsTitle: "material-icon-theme-for-vault",
+    settingsTitle: "Material File Tree Theme",
     languageName: "Language",
     languageDesc: "Change the language used on this settings page.",
     resourcesInstalled: "Icon resources installed",
@@ -212,9 +212,9 @@ const I18N = {
     folderIconsName: "Folder icons",
     folderIconsDesc: "Show Material icons for folders.",
     fileExtensionsName: "File extensions",
-    fileExtensionsDesc: "Show file extensions in the file explorer when Obsidian hides them.",
+    fileExtensionsDesc: "Show file extensions in the file explorer when they are hidden by default.",
     hideNativeTagsName: "Hide native file tags",
-    hideNativeTagsDesc: "Hide Obsidian file type badges such as JSON.",
+    hideNativeTagsDesc: "Hide native file type badges such as JSON.",
     iconSizeName: "Icon size",
     iconSizeDesc: "Size in pixels.",
     opacityName: "Opacity",
@@ -235,7 +235,7 @@ const I18N = {
     githubStarButton: "Star on GitHub"
   },
   zh: {
-    settingsTitle: "material-icon-theme-for-vault",
+    settingsTitle: "Material File Tree Theme",
     languageName: "语言",
     languageDesc: "切换此配置页面使用的语言。",
     resourcesInstalled: "图标资源已安装",
@@ -256,9 +256,9 @@ const I18N = {
     folderIconsName: "文件夹图标",
     folderIconsDesc: "为文件夹显示 Material 图标。",
     fileExtensionsName: "文件扩展名",
-    fileExtensionsDesc: "当 Obsidian 隐藏扩展名时，在文件浏览器里补充显示。",
+    fileExtensionsDesc: "当扩展名默认隐藏时，在文件浏览器里补充显示。",
     hideNativeTagsName: "隐藏原生文件标签",
-    hideNativeTagsDesc: "隐藏 Obsidian 的文件类型标记，例如 JSON。",
+    hideNativeTagsDesc: "隐藏原生文件类型标记，例如 JSON。",
     iconSizeName: "图标大小",
     iconSizeDesc: "单位为像素。",
     opacityName: "透明度",
@@ -266,7 +266,7 @@ const I18N = {
     grayscaleName: "灰度",
     grayscaleDesc: "以灰度样式显示图标。",
     themeCompatibilityName: "主题兼容",
-    themeCompatibilityDesc: "创建并启用 CSS 代码片段，用于屏蔽主题对文件树颜色的影响，同时保留插件图标和 Obsidian 原生缩进线。",
+    themeCompatibilityDesc: "创建并启用 CSS 代码片段，用于屏蔽主题对文件树颜色的影响，同时保留插件图标和原生缩进线。",
     installNeutralFileTreeButton: "安装并启用 CSS 片段",
     resetNeutralFileTreeButton: "移除片段",
     neutralFileTreeInstalled: "已创建并启用 neutral-file-tree。",
@@ -802,7 +802,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
       this.rootFolderNameExpandedIcons = lowerRecord(this.iconTheme.rootFolderNamesExpanded);
       this.fileExtensionKeys = Object.keys(this.fileExtensionIcons).sort((a, b) => b.length - a.length);
     } catch (error) {
-      console.error("material-icon-theme-for-vault: failed to load icon theme", error);
+      console.error("material-file-tree-theme: failed to load icon theme", error);
       this.iconTheme = { file: "file", folder: "folder", folderExpanded: "folder-open" };
       this.iconDefinitions = {};
       this.fileNameIcons = {};
@@ -910,7 +910,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
         new Notice(t(this.plugin, "importSuccess", { count: String(count) }));
         this.display();
       } catch (error) {
-        console.error("material-icon-theme-for-vault: failed to import resources", error);
+        console.error("material-file-tree-theme: failed to import resources", error);
         new Notice(error.message || t(this.plugin, "importFailed"));
       } finally {
         inputEl.value = "";
@@ -949,7 +949,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
             await this.plugin.installNeutralFileTreeSnippet();
             new Notice(t(this.plugin, "neutralFileTreeInstalled"));
           } catch (error) {
-            console.error("material-icon-theme-for-vault: failed to install neutral file tree snippet", error);
+            console.error("material-file-tree-theme: failed to install neutral file tree snippet", error);
             new Notice(t(this.plugin, "neutralFileTreeInstallFailed"));
           }
         }))
@@ -960,7 +960,7 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
             await this.plugin.removeNeutralFileTreeSnippet();
             new Notice(t(this.plugin, "neutralFileTreeRemoved"));
           } catch (error) {
-            console.error("material-icon-theme-for-vault: failed to remove neutral file tree snippet", error);
+            console.error("material-file-tree-theme: failed to remove neutral file tree snippet", error);
             new Notice(t(this.plugin, "neutralFileTreeRemoveFailed"));
           }
         }));
@@ -1229,7 +1229,7 @@ async function updateEnabledCssSnippet(adapter, appearancePath, snippetName, ena
     try {
       appearance = JSON.parse(await adapter.read(appearancePath));
     } catch (error) {
-      console.error("material-icon-theme-for-vault: failed to parse appearance.json", error);
+      console.error("material-file-tree-theme: failed to parse appearance.json", error);
     }
   }
 

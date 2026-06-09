@@ -1,26 +1,26 @@
-body.material-icon-theme-for-vault-enabled {
+body.material-file-tree-theme-enabled {
   --mfti-icon-size: 16px;
   --mfti-icon-opacity: 1;
   --mfti-icon-gap: 6px;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated {
   min-width: 0;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content,
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-file-title-content,
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-title-decorated .nav-folder-title-content {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-decorated .nav-folder-title-content {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-folder-decorated .nav-folder-title-content {
   margin-inline-start: 4px;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon {
   align-items: center;
   display: inline-flex;
   height: var(--mfti-icon-size);
@@ -33,7 +33,7 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   width: var(--mfti-icon-size);
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
   display: block;
   height: var(--mfti-icon-size);
   max-height: var(--mfti-icon-size);
@@ -41,7 +41,7 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   width: var(--mfti-icon-size);
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) {
   align-items: center !important;
   color: var(--nav-collapse-icon-color, var(--text-muted));
   display: inline-flex !important;
@@ -54,11 +54,11 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   width: 16px;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) svg {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator) svg {
   opacity: 0 !important;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
   border-bottom: 4px solid transparent;
   border-left: 5px solid currentColor;
   border-top: 4px solid transparent;
@@ -74,20 +74,20 @@ body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="fi
   width: 0;
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.is-collapsed > .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .nav-folder.is-collapsed > .nav-folder-title :is(.collapse-icon, .nav-folder-collapse-indicator)::before {
   transform: translate(-50%, -50%) rotate(0deg);
 }
 
-body.material-icon-theme-for-vault-enabled.mfti-icon-grayscale .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
+body.material-file-tree-theme-enabled.mfti-icon-grayscale .workspace-leaf-content[data-type="file-explorer"] .mfti-row-icon img {
   filter: grayscale(1);
 }
 
-body.material-icon-theme-for-vault-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-extension {
+body.material-file-tree-theme-enabled .workspace-leaf-content[data-type="file-explorer"] .mfti-extension {
   color: inherit;
   pointer-events: none;
 }
 
-body.material-icon-theme-for-vault-enabled.mfti-hide-native-file-tags .workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {
+body.material-file-tree-theme-enabled.mfti-hide-native-file-tags .workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {
   display: none;
 }
 

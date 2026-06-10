@@ -192,6 +192,8 @@ const EXTENSION_LANGUAGE_IDS = {
 const I18N = {
   en: {
     settingsTitle: "Material File Tree Theme",
+    importantSettingsName: "Important settings",
+    moreSettingsName: "More settings",
     languageName: "Language",
     languageDesc: "Change the language used on this settings page.",
     resourcesInstalled: "Icon resources installed",
@@ -229,6 +231,12 @@ const I18N = {
     neutralFileTreeInstallFailed: "Failed to create and enable neutral-file-tree CSS snippet.",
     neutralFileTreeRemoved: "Removed neutral-file-tree CSS snippet.",
     neutralFileTreeRemoveFailed: "Failed to remove neutral-file-tree CSS snippet.",
+    showAllFileTypesName: "Show all file types",
+    showAllFileTypesDesc: "Recommended. Lets the file tree show files beyond Markdown.",
+    showAllFileTypesUpdated: "Updated file type visibility.",
+    showAllFileTypesUpdateFailed: "Failed to update file type visibility.",
+    pluginPairingName: "Plugin pairing recommendations",
+    pluginPairingDesc: "Manual Sorting helps control file tree sorting. Code Files helps preview code files. For other file types, install matching viewer plugins such as draw.io.",
     githubName: "GitHub",
     githubDesc: "Report issues or support the project.",
     githubIssueButton: "Open issue",
@@ -236,6 +244,8 @@ const I18N = {
   },
   zh: {
     settingsTitle: "Material File Tree Theme",
+    importantSettingsName: "重要配置",
+    moreSettingsName: "更多配置",
     languageName: "语言",
     languageDesc: "切换此配置页面使用的语言。",
     resourcesInstalled: "图标资源已安装",
@@ -273,6 +283,12 @@ const I18N = {
     neutralFileTreeInstallFailed: "创建并启用 neutral-file-tree CSS 片段失败。",
     neutralFileTreeRemoved: "已移除 neutral-file-tree CSS 片段。",
     neutralFileTreeRemoveFailed: "移除 neutral-file-tree CSS 片段失败。",
+    showAllFileTypesName: "展示所有文件类型",
+    showAllFileTypesDesc: "推荐开启，可以查看 md 以外的文件。",
+    showAllFileTypesUpdated: "已更新文件类型展示设置。",
+    showAllFileTypesUpdateFailed: "更新文件类型展示设置失败。",
+    pluginPairingName: "插件搭配推荐",
+    pluginPairingDesc: "推荐 Manual Sorting 解决排序，Code Files 解决代码文件预览。其他类型文件可以寻找对应插件支持，比如 draw.io。",
     githubName: "GitHub",
     githubDesc: "反馈问题或支持这个项目。",
     githubIssueButton: "提交 issue",
@@ -292,6 +308,7 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     this.folderIconCache = new Map();
     this.iconUrlCache = new Map();
     this.resourceStatus = await this.getResourceStatus();
+    this.showAllFileTypes = await this.loadShowAllFileTypes();
 
     await this.loadIconTheme();
     this.restoreFileExplorer();
@@ -757,6 +774,49 @@ module.exports = class MaterialFileTreeIconsPlugin extends Plugin {
     return iconFiles.length;
   }
 
+  getAppConfigPath() {
+    return normalizePath(`${this.app.vault.configDir}/app.json`);
+  }
+
+  async loadShowAllFileTypes() {
+    try {
+      if (typeof this.app.vault.getConfig === "function") {
+        return Boolean(this.app.vault.getConfig("showUnsupportedFiles"));
+      }
+    } catch (error) {
+      console.error("material-file-tree-theme: failed to read showUnsupportedFiles from vault config", error);
+    }
+
+    const appConfig = await readAdapterJson(this.app.vault.adapter, this.getAppConfigPath(), {});
+    return Boolean(appConfig.showUnsupportedFiles);
+  }
+
+  async setShowAllFileTypes(enabled) {
+    let handledByVaultConfig = false;
+    if (typeof this.app.vault.setConfig === "function") {
+      try {
+        await this.app.vault.setConfig("showUnsupportedFiles", enabled);
+        handledByVaultConfig = true;
+      } catch (error) {
+        console.error("material-file-tree-theme: failed to update showUnsupportedFiles with vault config", error);
+      }
+    }
+
+    if (!handledByVaultConfig) {
+      const appConfigPath = this.getAppConfigPath();
+      const appConfig = await readAdapterJson(this.app.vault.adapter, appConfigPath, {});
+      appConfig.showUnsupportedFiles = enabled;
+      await ensureAdapterFolder(this.app.vault.adapter, dirname(appConfigPath));
+      await this.app.vault.adapter.write(appConfigPath, `${JSON.stringify(appConfig, null, 2)}\n`);
+    }
+
+    this.showAllFileTypes = enabled;
+    if (this.app.workspace && typeof this.app.workspace.trigger === "function") {
+      this.app.workspace.trigger("layout-change");
+    }
+    this.queueExplorerScan("show-all-file-types-change");
+  }
+
   getNeutralFileTreeSnippetPath() {
     return normalizePath(`${this.app.vault.configDir}/snippets/${NEUTRAL_FILE_TREE_SNIPPET_FILE}`);
   }
@@ -857,11 +917,17 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
     containerEl.createEl("h2", { text: t(this.plugin, "settingsTitle") });
+    containerEl.createEl("h3", { text: t(this.plugin, "importantSettingsName"), cls: "mfti-settings-heading" });
     this.renderLanguageControl(containerEl);
     this.renderResourceControls(containerEl);
     this.renderThemeCompatibilityControls(containerEl);
+    this.renderShowAllFileTypesControl(containerEl);
+    this.renderPluginPairingRecommendations(containerEl);
     this.renderGithubControls(containerEl);
-    this.renderIconControls(containerEl);
+
+    const moreSettingsEl = containerEl.createEl("details", { cls: "mfti-more-settings" });
+    moreSettingsEl.createEl("summary", { text: t(this.plugin, "moreSettingsName") });
+    this.renderIconControls(moreSettingsEl);
   }
 
   renderLanguageControl(containerEl) {
@@ -964,6 +1030,31 @@ class MaterialFileTreeIconsSettingTab extends PluginSettingTab {
             new Notice(t(this.plugin, "neutralFileTreeRemoveFailed"));
           }
         }));
+  }
+
+  renderShowAllFileTypesControl(containerEl) {
+    new Setting(containerEl)
+      .setName(t(this.plugin, "showAllFileTypesName"))
+      .setDesc(t(this.plugin, "showAllFileTypesDesc"))
+      .addToggle((toggle) => toggle
+        .setValue(Boolean(this.plugin.showAllFileTypes))
+        .onChange(async (value) => {
+          try {
+            await this.plugin.setShowAllFileTypes(value);
+            new Notice(t(this.plugin, "showAllFileTypesUpdated"));
+          } catch (error) {
+            console.error("material-file-tree-theme: failed to update show all file types", error);
+            new Notice(t(this.plugin, "showAllFileTypesUpdateFailed"));
+            this.plugin.showAllFileTypes = await this.plugin.loadShowAllFileTypes();
+            this.display();
+          }
+        }));
+  }
+
+  renderPluginPairingRecommendations(containerEl) {
+    new Setting(containerEl)
+      .setName(t(this.plugin, "pluginPairingName"))
+      .setDesc(t(this.plugin, "pluginPairingDesc"));
   }
 
   renderIconControls(containerEl) {
@@ -1221,6 +1312,19 @@ async function ensureAdapterFolder(adapter, folderPath) {
     await ensureAdapterFolder(adapter, parent);
   }
   await adapter.mkdir(normalized);
+}
+
+async function readAdapterJson(adapter, filePath, fallback) {
+  if (!await adapter.exists(filePath)) {
+    return fallback;
+  }
+
+  try {
+    return JSON.parse(await adapter.read(filePath));
+  } catch (error) {
+    console.error(`material-file-tree-theme: failed to parse ${filePath}`, error);
+    return fallback;
+  }
 }
 
 async function updateEnabledCssSnippet(adapter, appearancePath, snippetName, enabled) {

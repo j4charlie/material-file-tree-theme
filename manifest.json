@@ -1,9 +1,9 @@
 {
   "id": "material-file-tree-theme",
   "name": "Material File Tree Theme",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "minAppVersion": "1.5.0",
-  "description": "Adds Material Icon Theme file and folder icons to the file tree.",
+  "description": "Stable, theme-compatible Material Icon Theme file and folder icons for the file tree.",
   "author": "Local",
   "authorUrl": "",
   "isDesktopOnly": false

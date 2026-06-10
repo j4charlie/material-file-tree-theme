@@ -1,6 +1,6 @@
 # Material File Tree Theme
 
-A file tree theme that adds Material Icon Theme file and folder icons.
+A stable, theme-compatible file tree theme that adds Material Icon Theme file and folder icons.
 
 This plugin adapts the file and folder icon experience from the open-source
 [material-extensions/vscode-material-icon-theme](https://github.com/material-extensions/vscode-material-icon-theme)
@@ -10,6 +10,8 @@ project for the file explorer.
 
 - No build step.
 - No npm dependencies.
+- Stable file tree decoration designed for large vaults and frequent expand/collapse changes.
+- Theme-compatible styling that works with a wide range of visual themes.
 - Bundled Material-style SVG file and folder icons.
 - Icon matching driven by the upstream `dist/material-icons.json` mapping file.
 - Filename, compound extension, extension, language-id fallback, folder name, and expanded-folder name matching.
